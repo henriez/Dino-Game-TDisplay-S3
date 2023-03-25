@@ -32,6 +32,8 @@ bool ready=1;
 long readyTime=0;
 
 void setup() {  //.......................setup
+    pinMode(15, OUTPUT); // to be able to boot with battery
+    digitalWrite(15, 1); // and/or power from 5v rail instead of USB port
     pinMode(left,INPUT_PULLUP);
     pinMode(right,INPUT_PULLUP);
     tft.init();
