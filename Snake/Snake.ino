@@ -5,8 +5,9 @@
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite sprite = TFT_eSprite(&tft);
 
-#define left 0
-#define right 14
+#define left 43
+#define right 44
+#define BUZZER_PIN 16
 
 int size=1;
 int y[120]={0};
@@ -32,6 +33,8 @@ bool ready=1;
 long readyTime=0;
 
 void setup() {  //.......................setup
+    pinMode(15, OUTPUT); // to be able to boot with battery
+    digitalWrite(15, 1); // and/or power from 5v rail instead of USB port
     pinMode(left,INPUT_PULLUP);
     pinMode(right,INPUT_PULLUP);
     tft.init();
@@ -145,6 +148,12 @@ gOver=true;
 }
 
 void loop() { //...............................................................loop
+
+if(digitalRead(left) == LOW || digitalRead(right) == LOW){
+    tone(BUZZER_PIN, 500, 100);
+    delay(100);
+    noTone(BUZZER_PIN);
+}
   
 if(millis()>currentTime+period) 
 {run(); currentTime=millis();} 
