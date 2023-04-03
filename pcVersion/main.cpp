@@ -1,11 +1,14 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "headers/Game.h"
+
 using namespace std;
 
-#define SCREEN_WIDTH 1280 
-#define SCREEN_HEIGHT 720
+// sample SDL2 code\
 
+/*
 int main(int argc, char** argv){
+
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_Window *window = SDL_CreateWindow("SLD test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
@@ -42,6 +45,16 @@ int main(int argc, char** argv){
 
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+
+    return 0;
+}
+*/
+
+int main(int argc, char** argv){
+
+    Game* game = Game::getInstance();
+
+    game->run();
 
     return 0;
 }

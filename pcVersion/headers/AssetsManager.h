@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <string>
+#include "Asset.h"
 
 using namespace std;
 
@@ -14,10 +15,12 @@ public:
     static AssetsManager* getInstance();
 	static void deleteInstance();
 
-    short* getAssets(string assetName);
+    //short* getAsset(string assetName); // ESP32 version
+    Asset* getAsset(string assetName); // PC version
 
 private:
     AssetsManager();
     static AssetsManager* manager;
-    map<string, short*> assets;
+    //map<string, short*> assets; // ESP32 version
+    map<string, Asset*> assets; // PC version
 };

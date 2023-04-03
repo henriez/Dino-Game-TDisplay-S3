@@ -20,7 +20,11 @@ void AssetsManager::deleteInstance()
         delete manager;
 }
 
-short *AssetsManager::getAssets(string assetName)
+/*short *AssetsManager::getAsset(string assetName)
 {
     return assets[assetName];
-}
+}*/ // ESP32 version
+
+Asset* AssetsManager::getAsset(string assetName){
+    return assets[assetName];
+} // PC Version
