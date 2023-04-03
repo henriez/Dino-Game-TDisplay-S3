@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <SDL2/SDL.h>
+#include "AssetsManager.h"
 
 using namespace std;
 
@@ -18,15 +19,17 @@ public:
 	static void deleteInstance();
 
     void render(int x, int y, string assetName);
+    void present(); // PC only
     void clear();
     void addTexture(string path, string assetName);
 
 private:
     GraphicsManager();
     static GraphicsManager* manager;
+    AssetsManager* assets;
 
     //TFT_eSPI tft; // ESP32 version
     SDL_Renderer* renderer; // PC version
     SDL_Window* window; // PC version
-    map<string, SDL_Texture*> textures;
+    map<string, SDL_Texture*> textures; // PC only
 };

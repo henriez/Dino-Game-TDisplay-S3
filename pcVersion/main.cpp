@@ -56,5 +56,7 @@ int main(int argc, char** argv){
 
     game->run();
 
+    Game::deleteInstance();
+
     return 0;
 }

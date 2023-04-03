@@ -1,15 +1,15 @@
 #include "headers/GraphicsManager.h"
-#include "headers/AssetsManager.h"
 #include <iostream>
 using namespace std;
 
-AssetsManager *assets = AssetsManager::getInstance();
-
 GraphicsManager *GraphicsManager::manager = nullptr;
 
-GraphicsManager::GraphicsManager() {
-    SDL_Window *window = SDL_CreateWindow("SLD test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-    if(!window){
+GraphicsManager::GraphicsManager()
+{
+    assets = AssetsManager::getInstance();
+    window = SDL_CreateWindow("DINO", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    if (!window)
+    {
         cout << "Error: Failed to open window\nSDL Error:" << SDL_GetError();
     }
 
@@ -17,8 +17,18 @@ GraphicsManager::GraphicsManager() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-GraphicsManager::~GraphicsManager() {
+GraphicsManager::~GraphicsManager()
+{
 
+    map<string, SDL_Texture *>::iterator i = textures.begin();
+    for (i = textures.begin(); i != textures.end(); i++)
+    {
+        SDL_DestroyTexture(i->second);
+    }
+
+    textures.clear();
+    AssetsManager::deleteInstance();
+    
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
@@ -38,10 +48,11 @@ void GraphicsManager::deleteInstance()
 }
 
 // PC only
-void GraphicsManager::addTexture(string path, string assetName){
-    SDL_Surface* tmpSurface = SDL_LoadBMP(path.c_str());
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    if(tex)
+void GraphicsManager::addTexture(string path, string assetName)
+{
+    SDL_Surface *tmpSurface = SDL_LoadBMP(path.c_str());
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+    if (tex)
         textures.emplace(assetName, tex);
     SDL_FreeSurface(tmpSurface);
 }
@@ -70,11 +81,17 @@ void GraphicsManager::render(int x, int y, string assetName)
     SDL_RenderCopy(renderer, tex, &src, &dest);
 }
 
+// PC only
+void GraphicsManager::present()
+{
+    SDL_RenderPresent(renderer);
+}
+
 /*
 // ESP32 version
 void GraphicsManager::clear(){
     tft.fillScreen(TFT_BLACK);
-} 
+}
 
 // ESP32 version
 void GraphicsManager::render(int x, int y, string assetName){

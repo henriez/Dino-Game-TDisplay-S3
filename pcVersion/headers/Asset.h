@@ -26,6 +26,7 @@ class Asset
 {
 public:
     Asset() {}
+    Asset(const char* filepath) : path(filepath) {}
     ~Asset() {}
     std::string getPath() { return path; }
 

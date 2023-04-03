@@ -7,7 +7,9 @@ Game::Game() : running(true) {
     graphics = GraphicsManager::getInstance();
 }
 
-Game::~Game() {}
+Game::~Game() {
+    GraphicsManager::deleteInstance();
+}
 
 Game *Game::getInstance()
 {
