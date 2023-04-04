@@ -5,7 +5,7 @@ AssetsManager *AssetsManager::manager = nullptr;
 AssetsManager::AssetsManager()
 {
     Asset *tmpAsset;
-    tmpAsset = new Asset("dino");
+    tmpAsset = new Asset("assets/trex.bmp", 90, 90);
     assets.emplace("dino", tmpAsset);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <string> // only for PC
+using namespace std;
 
 /*// ESP32 version
 class Asset
@@ -25,16 +26,14 @@ private:
 class Asset
 {
 public:
-    Asset() {}
-    Asset(const char* filepath) : path(filepath) {}
+    Asset(string filepath = "", int w = 10, int h = 10) : path(filepath), width(w), height(h) {}
     ~Asset() {}
-    std::string getPath() { return path; }
-
-    int getW() { return width; }
+    string getPath() { return path; }
     int getH() { return height; }
+    int getW() { return width; }
 
 private:
-    std::string path;
+    string path;
     int width;
     int height;
 };

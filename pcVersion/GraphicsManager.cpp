@@ -13,8 +13,11 @@ GraphicsManager::GraphicsManager()
         cout << "Error: Failed to open window\nSDL Error:" << SDL_GetError();
     }
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    Asset *dino = assets->getAsset("dino");
+    addTexture(dino->getPath(), "dino");
 }
 
 GraphicsManager::~GraphicsManager()
@@ -28,7 +31,7 @@ GraphicsManager::~GraphicsManager()
 
     textures.clear();
     AssetsManager::deleteInstance();
-    
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
@@ -51,9 +54,17 @@ void GraphicsManager::deleteInstance()
 void GraphicsManager::addTexture(string path, string assetName)
 {
     SDL_Surface *tmpSurface = SDL_LoadBMP(path.c_str());
+
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+
     if (tex)
-        textures.emplace(assetName, tex);
+        textures.insert({assetName, tex});
+    
+    else{
+        cout << "failed creating texture " << SDL_GetError() << endl;
+        SDL_FreeSurface(tmpSurface);
+        return;
+    }
     SDL_FreeSurface(tmpSurface);
 }
 

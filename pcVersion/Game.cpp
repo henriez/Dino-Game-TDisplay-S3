@@ -41,5 +41,8 @@ void Game::run()
                 break;
             }
         }
+
+        graphics->render(40, 40, "dino");
+        graphics->present();
     }
 }

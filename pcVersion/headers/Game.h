@@ -18,4 +18,5 @@ private:
     bool running;
     SDL_Event event;
     GraphicsManager* graphics;
+    string state;
 };
