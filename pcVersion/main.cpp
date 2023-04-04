@@ -2,9 +2,7 @@
 #include <iostream>
 #include "headers/Game.h"
 
-using namespace std;
-
-// sample SDL2 code\
+// sample SDL2 code
 
 /*
 int main(int argc, char** argv){
@@ -50,7 +48,7 @@ int main(int argc, char** argv){
 }
 */
 
-int main(int argc, char** argv){
+int main(int argc, char* argv[]){
 
     Game* game = Game::getInstance();
 

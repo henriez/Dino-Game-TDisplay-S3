@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-GraphicsManager *GraphicsManager::manager = nullptr;
+GraphicsManager *GraphicsManager::manager = NULL;
 
 GraphicsManager::GraphicsManager()
 {
@@ -58,7 +58,7 @@ void GraphicsManager::addTexture(string path, string assetName)
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 
     if (tex)
-        textures.insert({assetName, tex});
+        textures.insert(std::make_pair(assetName, tex));
     
     else{
         cout << "failed creating texture " << SDL_GetError() << endl;

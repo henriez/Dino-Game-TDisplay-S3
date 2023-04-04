@@ -1,6 +1,6 @@
 #include "headers/Game.h"
 
-Game *Game::game = nullptr;
+Game *Game::game = NULL;
 
 Game::Game() : running(true) {
     SDL_Init(SDL_INIT_EVERYTHING);

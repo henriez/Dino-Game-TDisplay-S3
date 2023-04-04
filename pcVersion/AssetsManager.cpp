@@ -1,12 +1,12 @@
 #include "headers/AssetsManager.h"
 
-AssetsManager *AssetsManager::manager = nullptr;
+AssetsManager *AssetsManager::manager = NULL;
 
 AssetsManager::AssetsManager()
 {
     Asset *tmpAsset;
     tmpAsset = new Asset("assets/trex.bmp", 90, 90);
-    assets.emplace("dino", tmpAsset);
+    assets.insert(std::make_pair("dino", tmpAsset));
 }
 
 AssetsManager::~AssetsManager()
