@@ -59,8 +59,9 @@ void GraphicsManager::addTexture(string path, string assetName)
 
     if (tex)
         textures.insert(std::make_pair(assetName, tex));
-    
-    else{
+
+    else
+    {
         cout << "failed creating texture " << SDL_GetError() << endl;
         SDL_FreeSurface(tmpSurface);
         return;
