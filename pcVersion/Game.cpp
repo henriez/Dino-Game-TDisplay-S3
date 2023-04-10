@@ -12,6 +12,7 @@ Game::Game() : running(true)
     collision = CollisionManager::getInstance();
     dino = new Dino;
     bird = new Bird;
+    cactus = new Cactus;
     state = STATE_MENU;
     start = end = 0;
 }
@@ -22,6 +23,7 @@ Game::~Game()
     CollisionManager::deleteInstance();
     delete dino;
     delete bird;
+    delete cactus;
 }
 
 Game *Game::getInstance()
@@ -56,6 +58,7 @@ void Game::run()
             handleEvents();
             dino->update();
             bird->update();
+            cactus->update();
         }
 
         end = SDL_GetTicks();
@@ -126,4 +129,6 @@ void Game::scrollBackground()
 
     int srcX = (int)(x) % 320;
     graphics->render(0, 0, "background", srcX);
+    
+    cactus->updateCactus(-x);
 }

@@ -27,6 +27,7 @@ private:
     SDL_Event event;
     GraphicsManager* graphics;
     CollisionManager* collision;
+    Cactus* cactus;
     Bird* bird;
     Dino* dino;
     Uint32 start, end;
