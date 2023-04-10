@@ -7,6 +7,8 @@ AssetsManager::AssetsManager()
     Asset *tmpAsset;
     tmpAsset = new Asset("assets/trex.bmp", 90, 90);
     assets.insert(std::make_pair("dino", tmpAsset));
+    tmpAsset = new Asset("assets/menu.bmp", 320, 170);
+    assets.insert(std::make_pair("menu", tmpAsset));
 }
 
 AssetsManager::~AssetsManager()

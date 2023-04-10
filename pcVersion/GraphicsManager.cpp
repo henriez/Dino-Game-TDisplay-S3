@@ -16,8 +16,10 @@ GraphicsManager::GraphicsManager()
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    Asset *dino = assets->getAsset("dino");
-    addTexture(dino->getPath(), "dino");
+    Asset *tmp = assets->getAsset("dino");
+    addTexture(tmp->getPath(), "dino");
+    tmp = assets->getAsset("menu");
+    addTexture(tmp->getPath(), "menu");
 }
 
 GraphicsManager::~GraphicsManager()

@@ -16,6 +16,7 @@ public:
 
     void run();
     void handleEvents();
+    void handleEventsMenu();
 
 private:
     Game();
@@ -26,5 +27,5 @@ private:
     CollisionManager* collision;
     Dino* dino;
 
-    string state;
+    int state;
 };

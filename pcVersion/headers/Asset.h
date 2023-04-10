@@ -29,11 +29,11 @@ public:
     Asset(string filepath = "", int w = 10, int h = 10) : path(filepath), width(w), height(h) {}
     ~Asset() {}
     string getPath() { return path; }
-    int getH() { return height; }
-    int getW() { return width; }
+    const int getH() { return height; }
+    const int getW() { return width; }
 
 private:
     string path;
-    int width;
-    int height;
+    const int width;
+    const int height;
 };
