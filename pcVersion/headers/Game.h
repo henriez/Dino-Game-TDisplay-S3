@@ -25,6 +25,7 @@ private:
     SDL_Event event;
     GraphicsManager* graphics;
     CollisionManager* collision;
+    Bird* bird;
     Dino* dino;
 
     int state;

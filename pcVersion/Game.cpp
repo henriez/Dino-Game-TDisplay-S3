@@ -11,6 +11,7 @@ Game::Game() : running(true)
     graphics = GraphicsManager::getInstance();
     collision = CollisionManager::getInstance();
     dino = new Dino;
+    bird = new Bird;
     state = STATE_MENU;
 }
 
@@ -19,6 +20,7 @@ Game::~Game()
     GraphicsManager::deleteInstance();
     CollisionManager::deleteInstance();
     delete dino;
+    delete bird;
 }
 
 Game *Game::getInstance()
@@ -53,6 +55,7 @@ void Game::run()
             graphics->render(0, 0, "background");
             handleEvents();
             dino->update();
+            bird->update();
         }
 
         end = SDL_GetTicks();
