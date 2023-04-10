@@ -80,7 +80,7 @@ void GraphicsManager::clear()
 }
 
 // PC version
-void GraphicsManager::render(int x, int y, string assetName)
+void GraphicsManager::render(int x, int y, string assetName, int srcX, int srcY)
 {
     Asset *img = assets->getAsset(assetName);
     SDL_Texture *tex;
@@ -92,7 +92,7 @@ void GraphicsManager::render(int x, int y, string assetName)
         addTexture(path, assetName);
         tex = textures[assetName];
     }
-    SDL_Rect src = {0, 0, img->getW(), img->getH()};
+    SDL_Rect src = {srcX, srcY, img->getW(), img->getH()};
     SDL_Rect dest = {x, y, img->getW(), img->getH()};
     SDL_RenderCopy(renderer, tex, &src, &dest);
 }

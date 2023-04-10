@@ -18,6 +18,8 @@ public:
     void handleEvents();
     void handleEventsMenu();
 
+    void scrollBackground();
+
 private:
     Game();
     static Game *game;
@@ -26,6 +28,7 @@ private:
     GraphicsManager* graphics;
     CollisionManager* collision;
     Dino* dino;
+    Uint32 start, end;
 
     int state;
 };
