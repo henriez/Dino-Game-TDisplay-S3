@@ -20,6 +20,8 @@ GraphicsManager::GraphicsManager()
     addTexture(tmp->getPath(), "dino");
     tmp = assets->getAsset("menu");
     addTexture(tmp->getPath(), "menu");
+    tmp = assets->getAsset("background");
+    addTexture(tmp->getPath(), "background");
 }
 
 GraphicsManager::~GraphicsManager()

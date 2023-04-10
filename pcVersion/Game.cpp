@@ -50,6 +50,7 @@ void Game::run()
         }
         else if (state == STATE_RUNNING)
         {
+            graphics->render(0, 0, "background");
             handleEvents();
             dino->update();
         }
