@@ -13,6 +13,7 @@ Game::Game() : running(true)
     dino = new Dino;
     bird = new Bird;
     state = STATE_MENU;
+    start = end = 0;
 }
 
 Game::~Game()
@@ -39,7 +40,6 @@ void Game::deleteInstance()
 
 void Game::run()
 {
-    Uint32 start, end;
     while (running)
     {
         graphics->clear();
@@ -52,7 +52,7 @@ void Game::run()
         }
         else if (state == STATE_RUNNING)
         {
-            graphics->render(0, 0, "background");
+            scrollBackground();
             handleEvents();
             dino->update();
             bird->update();
@@ -112,4 +112,18 @@ void Game::handleEventsMenu()
             break;
         }
     }
+}
+
+void Game::scrollBackground()
+{
+    end = SDL_GetTicks();
+    Uint32 deltaTime = end - start;
+    double k = 0.0000008;
+    double x = 0;
+    double v0 = 0.06;
+
+    x = v0*end + k*(end*end);    
+
+    int srcX = (int)(x) % 320;
+    graphics->render(0, 0, "background", srcX);
 }

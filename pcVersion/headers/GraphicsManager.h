@@ -18,7 +18,7 @@ public:
     static GraphicsManager* getInstance();
 	static void deleteInstance();
 
-    void render(int x, int y, string assetName);
+    void render(int x, int y, string assetName, int srcX = 0, int srcY = 0);
     void present(); // PC only
     void clear();
     void addTexture(string path, string assetName);
