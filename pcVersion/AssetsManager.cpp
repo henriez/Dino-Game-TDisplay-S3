@@ -5,8 +5,13 @@ AssetsManager *AssetsManager::manager = NULL;
 AssetsManager::AssetsManager()
 {
     Asset *tmpAsset;
-    tmpAsset = new Asset("assets/trex.bmp", 90, 90);
+    tmpAsset = new Asset("assets/trex.bmp", 54, 54);
     assets.insert(std::make_pair("dino", tmpAsset));
+    tmpAsset = new Asset("assets/crouch.bmp", 54, 27);
+    assets.insert(std::make_pair("crouch", tmpAsset));
+    tmpAsset = new Asset("assets/bird.bmp", 42, 32);
+    assets.insert(std::make_pair("bird", tmpAsset));
+
     tmpAsset = new Asset("assets/menu.bmp", 320, 170);
     assets.insert(std::make_pair("menu", tmpAsset));
     tmpAsset = new Asset("assets/background.bmp", 320, 170);

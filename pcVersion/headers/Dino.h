@@ -11,7 +11,8 @@ public:
 
     void jump();
     void crouch();
+    void stand();
 private:
-    bool inAir;
+    int state;
     float ySpeed;
 };

@@ -3,10 +3,14 @@
 
 #define gravity 2
 
+#define GROUND 1
+#define CROUCH 2
+#define AIR 3
+
 Dino::Dino()
 {
-    collider = new Collider(40, 40, 90, 90);
-    inAir = false;
+    collider = new Collider(40, 80, 54, 54);
+    state = GROUND;
     ySpeed = 0;
 }
 
@@ -20,13 +24,13 @@ void Dino::update()
 {
 
     collider->y += ySpeed;
-    if (collider->y > 40)
+    if (collider->y > 80)
     {
-        collider->y = 40;
-        inAir = false;
+        collider->y = 80;
+        state = GROUND;
         ySpeed = 0;
     }
-    if (inAir)
+    if (state == AIR)
         ySpeed += gravity;
 
     render();
@@ -40,18 +44,27 @@ void Dino::update(){
 
 void Dino::render()
 {
-    GraphicsManager::getInstance()->render(collider->x, collider->y, "dino");
+    if (state == CROUCH)
+        GraphicsManager::getInstance()->render(collider->x, collider->y + 27, "crouch");
+    else
+        GraphicsManager::getInstance()->render(collider->x, collider->y, "dino");
 }
 
 void Dino::crouch()
 {
+    state = CROUCH;
+}
+
+void Dino::stand()
+{
+    state = GROUND;
 }
 
 void Dino::jump()
 {
-    if (!inAir)
+    if (state != AIR)
     {
-        inAir = true;
+        state = AIR;
         ySpeed = -15;
     }
 }

@@ -18,6 +18,10 @@ GraphicsManager::GraphicsManager()
 
     Asset *tmp = assets->getAsset("dino");
     addTexture(tmp->getPath(), "dino");
+    tmp = assets->getAsset("crouch");
+    addTexture(tmp->getPath(), "crouch");
+    tmp = assets->getAsset("bird");
+    addTexture(tmp->getPath(), "bird");
     tmp = assets->getAsset("menu");
     addTexture(tmp->getPath(), "menu");
     tmp = assets->getAsset("background");

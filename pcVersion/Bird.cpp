@@ -1,9 +1,9 @@
 #include "headers/Bird.h"
 #include "headers/GraphicsManager.h"
 
-Bird::Bird()
+Bird::Bird(int y)
 {
-    collider = new Collider(270, -10, 50, 50);
+    collider = new Collider(SCREEN_WIDTH, y, 42, 32);
     xSpeed = -5;
 }
 
@@ -27,5 +27,5 @@ void Bird::update(){
 
 void Bird::render()
 {
-    GraphicsManager::getInstance()->render(collider->x, collider->y, "dino");
+    GraphicsManager::getInstance()->render(collider->x, collider->y, "bird");
 }

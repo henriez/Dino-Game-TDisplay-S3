@@ -86,6 +86,8 @@ void Game::handleEvents()
         case 769:
             if (event.key.keysym.sym == SDLK_w)
                 dino->jump();
+            else if (event.key.keysym.sym == SDLK_s)
+                dino->stand();
 
             break;
 
