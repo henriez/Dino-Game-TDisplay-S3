@@ -132,5 +132,5 @@ void Game::scrollBackground()
     int srcX = (int)(x) % 320;
     graphics->render(0, 0, "background", srcX);
     
-    cactus->updateCactus(-x);
+    cactus->updateCactus(-x); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
 }
