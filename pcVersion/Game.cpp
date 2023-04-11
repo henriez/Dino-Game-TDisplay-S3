@@ -12,7 +12,7 @@ Game::Game() : running(true)
     collision = CollisionManager::getInstance();
     dino = new Dino;
     bird = new Bird;
-    cactus = new Cactus;
+    cactus = new Cactus(CACTUS_MODEL_2);
     state = STATE_MENU;
     start = end = 0;
 }
@@ -125,7 +125,7 @@ void Game::scrollBackground()
     Uint32 deltaTime = end - start;
     double k = 0.0000008;
     double x = 0;
-    double v0 = 0.06;
+    double v0 = 0.12;
 
     x = v0*end + k*(end*end);    
 

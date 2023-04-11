@@ -12,6 +12,15 @@ AssetsManager::AssetsManager()
     tmpAsset = new Asset("assets/bird.bmp", 42, 32);
     assets.insert(std::make_pair("bird", tmpAsset));
 
+    tmpAsset = new Asset("assets/cactus1.bmp", 11, 24);
+    assets.insert(std::make_pair("cactus1", tmpAsset));
+    tmpAsset = new Asset("assets/cactus2.bmp", 18, 36);
+    assets.insert(std::make_pair("cactus2", tmpAsset));
+    tmpAsset = new Asset("assets/cactus3.bmp", 50, 36);
+    assets.insert(std::make_pair("cactus3", tmpAsset));
+    tmpAsset = new Asset("assets/cactus4.bmp", 35, 36);
+    assets.insert(std::make_pair("cactus4", tmpAsset));
+
     tmpAsset = new Asset("assets/menu.bmp", 320, 170);
     assets.insert(std::make_pair("menu", tmpAsset));
     tmpAsset = new Asset("assets/background.bmp", 320, 170);

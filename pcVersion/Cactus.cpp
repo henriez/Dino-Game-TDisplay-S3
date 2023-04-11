@@ -1,10 +1,27 @@
 #include "headers/Cactus.h"
 #include "headers/GraphicsManager.h"
 
-Cactus::Cactus()
+Cactus::Cactus(int model)
 {
-    collider = new Collider(280, 40, 40, 60);
-    initialPosition=280;
+    this->model = model;
+    switch (model)
+    {
+    case CACTUS_MODEL_1:
+        collider = new Collider(320, 106, 11, 24);
+        break;
+    case CACTUS_MODEL_2:
+        collider = new Collider(320, 90, 18, 36);
+        break;
+    case CACTUS_MODEL_3:
+        collider = new Collider(320, 90, 50, 36);
+        break;
+    case CACTUS_MODEL_4:
+        collider = new Collider(320, 90, 35, 36);
+        break;
+    default:
+        break;
+    }
+    initialPosition = 320;
 }
 
 Cactus::~Cactus()
@@ -13,10 +30,10 @@ Cactus::~Cactus()
 }
 
 // PC version
-void Cactus::update(){}
-void Cactus::updateCactus(int x) //CACTO VOLTAR SRC COM RELAÇÃO A POSIÇÃO INICIAL E NÃO +=
+void Cactus::update() {}
+void Cactus::updateCactus(int x) // CACTO VOLTAR SRC COM RELAÇÃO A POSIÇÃO INICIAL E NÃO +=
 {
-    collider->x=initialPosition+x;
+    collider->x = initialPosition + x;
     render();
 }
 
@@ -28,5 +45,22 @@ void Bird::update(){
 
 void Cactus::render()
 {
-    GraphicsManager::getInstance()->render(collider->x, collider->y, "dino");
+    switch (model)
+    {
+    case CACTUS_MODEL_1:
+        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus1");
+        break;
+    case CACTUS_MODEL_2:
+        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus2");
+        break;
+    case CACTUS_MODEL_3:
+        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus3");
+        break;
+    case CACTUS_MODEL_4:
+        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus4");
+        break;
+    default:
+        break;
+    }
+    
 }

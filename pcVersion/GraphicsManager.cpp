@@ -20,8 +20,19 @@ GraphicsManager::GraphicsManager()
     addTexture(tmp->getPath(), "dino");
     tmp = assets->getAsset("crouch");
     addTexture(tmp->getPath(), "crouch");
+
     tmp = assets->getAsset("bird");
     addTexture(tmp->getPath(), "bird");
+
+    tmp = assets->getAsset("cactus1");
+    addTexture(tmp->getPath(), "cactus1");
+    tmp = assets->getAsset("cactus2");
+    addTexture(tmp->getPath(), "cactus2");
+    tmp = assets->getAsset("cactus3");
+    addTexture(tmp->getPath(), "cactus3");
+    tmp = assets->getAsset("cactus4");
+    addTexture(tmp->getPath(), "cactus4");
+
     tmp = assets->getAsset("menu");
     addTexture(tmp->getPath(), "menu");
     tmp = assets->getAsset("background");
