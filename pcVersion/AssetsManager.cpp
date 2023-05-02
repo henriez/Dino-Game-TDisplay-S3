@@ -33,6 +33,7 @@ AssetsManager::AssetsManager() {
 
   menu = new Asset("assets/menu.bmp", 320, 170);
   background = new Asset("assets/background.bmp", 320, 170);
+  gameover = new Asset("assets/gameover.bmp", 320, 170);
 
 }
 
@@ -46,6 +47,7 @@ AssetsManager::~AssetsManager() {
   delete cactus4;
   delete menu;
   delete background;
+  delete gameover;
 }
 
 AssetsManager* AssetsManager::getInstance() {
@@ -80,6 +82,8 @@ Asset* AssetsManager::getAsset(int assetName) {
       return menu;
     case BACKGROUND:
       return background;
+    case GAMEOVER:
+      return gameover;
     default:
       return nullptr;
   }

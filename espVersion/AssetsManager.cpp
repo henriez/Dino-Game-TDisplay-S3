@@ -12,7 +12,7 @@ using namespace std;
 #include "birdBMP.h"
 #include "menu.h"
 #include "background.h"
-
+#include "gameover.h"
 
 AssetsManager* AssetsManager::manager = NULL;
 
@@ -30,6 +30,7 @@ AssetsManager::AssetsManager() {
 
   menu = new Asset(menuBMP, 320, 170);
   background = new Asset(backgroundBMP, 320, 170);
+  gameover = new Asset(gameoverBMP, 320, 170);
 
   // PC
   // dino = new Asset("assets/trex.bmp", 54, 54);
@@ -57,6 +58,7 @@ AssetsManager::~AssetsManager() {
   delete cactus4;
   delete menu;
   delete background;
+  delete gamover;
 }
 
 AssetsManager* AssetsManager::getInstance() {
@@ -91,6 +93,8 @@ Asset* AssetsManager::getAsset(int assetName) {
       return menu;
     case BACKGROUND:
       return background;
+    case GAMEOVER:
+      return gameover;
     default:
       return nullptr;
   }

@@ -2,6 +2,7 @@
 #define FRAMETIME 40
 #define STATE_MENU 1
 #define STATE_RUNNING 2
+#define STATE_GAMEOVER 3
 
 // pc only
 #define LOW 10
@@ -28,7 +29,7 @@ Game::Game()
   collision = CollisionManager::getInstance();
   dino = new Dino;
   bird = new Bird;
-  cactus = new Cactus(CACTUS_MODEL_2);
+  cactus = new Cactus(CACTUS_MODEL_1);
   state = STATE_MENU;
   start = end = 0;
 }
@@ -70,13 +71,23 @@ void Game::run()
     }
     else if (state == STATE_RUNNING)
     {
-      
       scrollBackground(); // como fazer essa na esp?
       handleEvents();
       dino->update();
-      bird->update();
-      cactus->update();
-      
+      if (collision->collide(dino, cactus) || collision->collide(dino, bird))
+      {
+        state = STATE_GAMEOVER;
+        reset();
+      }
+      if (collision->outOfBounds(cactus))
+        cactus->renew();
+      if (collision->outOfBounds(bird))
+        bird->renew();
+    }
+    else if (state == STATE_GAMEOVER)
+    {
+      handleEventsMenu();
+      graphics->render(0, 0, GAMEOVER);
     }
 
     end = millis();
@@ -98,6 +109,16 @@ void Game::handleEvents()
   // if (event.key.keysym.sym == SDLK_s)
   //  dino->stand();
 }*/
+
+void Game::reset()
+{
+  delete dino;
+  dino = new Dino;
+  delete bird;
+  bird = new Bird;
+  delete cactus;
+  cactus = new Cactus;
+}
 
 // pc
 void Game::handleEvents()
@@ -142,6 +163,7 @@ void Game::handleEventsMenu()
       state = STATE_RUNNING;
       onMenu = true;
       start = millis();
+      cactus->startTimer(start);
     }
   }
 }*/
@@ -175,14 +197,15 @@ void Game::scrollBackground()
 {
   end = millis() - gameStart;
   double x = 0;
-  
+
   // x = v0t + at²/2
-  x = 0.12 * end + 0.0000008 * (end * end);
+  x = 0.23 * end + 0.0000008 * (end * end);
 
   int srcX = (int)(x) % 320;
   graphics->render(0, 0, BACKGROUND, srcX);
 
-  cactus->updateCactus(-x); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
+  cactus->update(-x);
+  bird->update(-x);
 }
 
 unsigned long Game::calculateDeltaTime()

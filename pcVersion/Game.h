@@ -21,6 +21,7 @@ public:
     void run();
     void handleEvents();
     void handleEventsMenu();
+    void reset();
 
     void scrollBackground();
     unsigned long calculateDeltaTime();

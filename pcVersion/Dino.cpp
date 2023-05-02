@@ -60,6 +60,6 @@ void Dino::jump()
     if (state != AIR)
     {
         state = AIR;
-        ySpeed = -15;
+        ySpeed = -17;
     }
 }

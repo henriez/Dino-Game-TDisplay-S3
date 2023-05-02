@@ -12,8 +12,8 @@ public:
     Cactus(int model = CACTUS_MODEL_1);
     ~Cactus();
     void render();
-    void update();
-    void updateCactus (int x);
+    void update(double dx);
+    void renew() override;
 
 private:
     int initialPosition;

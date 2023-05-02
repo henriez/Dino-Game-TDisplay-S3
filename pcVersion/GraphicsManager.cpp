@@ -43,6 +43,8 @@ GraphicsManager::GraphicsManager()
   addTexture(tmp->getPath(), MENU);
   tmp = assets->getAsset(BACKGROUND);
   addTexture(tmp->getPath(), BACKGROUND);
+  tmp = assets->getAsset(GAMEOVER);
+  addTexture(tmp->getPath(), GAMEOVER);
 
   // ================ PC ONLY =============================== //
   

@@ -11,6 +11,7 @@
 #define BIRD 7
 #define MENU 8
 #define BACKGROUND 9
+#define GAMEOVER 10
 
 using namespace std;
 
@@ -37,4 +38,5 @@ private:
   Asset* cactus4;
   Asset* menu;
   Asset* background;
+  Asset* gameover;
 };

@@ -8,7 +8,8 @@ public:
     ~Entity();
 
     virtual void render() = 0;
-    virtual void update() = 0;
+    virtual void renew() {}
+    Collider getCollider() { return *collider; }
 protected:
     Collider* collider;    
 };
