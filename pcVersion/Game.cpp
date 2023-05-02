@@ -108,8 +108,10 @@ void Game::handleEventsMenu()
             break;
 
         case 769:
-            if (event.key.keysym.sym == SDLK_w)
+            if (event.key.keysym.sym == SDLK_w){
                 state = STATE_RUNNING;
+                gameStart = SDL_GetTicks();
+            }
 
             break;
 
@@ -122,15 +124,14 @@ void Game::handleEventsMenu()
 void Game::scrollBackground()
 {
     end = SDL_GetTicks();
-    Uint32 deltaTime = end - start;
-    double k = 0.0000008;
+    Uint32 deltaTime = end - gameStart;
     double x = 0;
-    double v0 = 0.12;
 
-    x = v0*end + k*(end*end);    
+    // x = v0t + at²/2
+    x = 0.12*deltaTime + 0.0000008*(deltaTime*deltaTime);    
 
     int srcX = (int)(x) % 320;
     graphics->render(0, 0, "background", srcX);
     
-    cactus->updateCactus(-x); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
+    cactus->updateCactus(-srcX); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
 }

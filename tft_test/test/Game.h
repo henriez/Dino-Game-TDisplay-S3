@@ -1,10 +1,14 @@
 #pragma once
 
+#include <Arduino.h>
 #include "GraphicsManager.h"
 #include "CollisionManager.h"
 #include "Dino.h"
 #include "Cactus.h"
 #include "Bird.h"
+
+#define LEFT_PIN 0
+#define RIGHT_PIN 14
 
 class Game
 {
@@ -19,18 +23,18 @@ public:
     void handleEventsMenu();
 
     void scrollBackground();
+    unsigned long calculateDeltaTime();
 
 private:
     Game();
     static Game *game;
     bool running;
-    SDL_Event event;
     GraphicsManager* graphics;
     CollisionManager* collision;
     Cactus* cactus;
     Bird* bird;
     Dino* dino;
-    Uint32 start, end, gameStart;
+    unsigned long startFrame, start, endtime;
 
     int state;
 };
