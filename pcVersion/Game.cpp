@@ -29,7 +29,7 @@ Game::Game()
   collision = CollisionManager::getInstance();
   dino = new Dino;
   bird = new Bird;
-  cactus = new Cactus(CACTUS_MODEL_1);
+  cactus = new Cactus;
   state = STATE_MENU;
   start = end = 0;
 }

@@ -38,8 +38,6 @@ void Cactus::update(double dx)
     render();
 }
 
-
-
 void Cactus::render()
 {
     switch (model)

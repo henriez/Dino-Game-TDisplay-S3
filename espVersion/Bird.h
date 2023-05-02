@@ -11,8 +11,10 @@ public:
     Bird(int y = HEIGHT1);
     ~Bird();
     void render();
-    void update();
+    void update(double dx);
+    void renew() override;
 
 private:
+    int initialPosition;
     float xSpeed;
 };

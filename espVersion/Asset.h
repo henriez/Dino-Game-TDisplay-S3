@@ -1,6 +1,5 @@
 #pragma once
 using namespace std;
-#include <string>
 
 // ESP32 version
 

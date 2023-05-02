@@ -20,6 +20,7 @@ public:
     void run();
     void handleEvents();
     void handleEventsMenu();
+    void reset();
 
     void scrollBackground();
     unsigned long calculateDeltaTime();
@@ -27,7 +28,6 @@ public:
 private:
     Game();
     static Game *game;
-    bool running;
     GraphicsManager* graphics;
     CollisionManager* collision;
     Cactus* cactus;

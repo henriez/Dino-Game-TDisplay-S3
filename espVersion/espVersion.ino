@@ -3,11 +3,11 @@
 
 Game* game;
 void setup() {
-    game = Game::getInstance();
-
+  pinMode(RIGHT_PIN, INPUT_PULLUP);
+  pinMode(LEFT_PIN, INPUT_PULLUP);
+  game = Game::getInstance();
 }
 
 void loop() {
-    game->run();
-
+  game->run();
 }

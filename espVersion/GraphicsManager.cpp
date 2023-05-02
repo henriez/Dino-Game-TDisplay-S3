@@ -1,7 +1,4 @@
 #include "GraphicsManager.h"
-#include <iostream>
-using namespace std;
-
 GraphicsManager *GraphicsManager::manager = NULL;
 
 GraphicsManager::GraphicsManager()
@@ -121,7 +118,7 @@ void GraphicsManager::present()
 void GraphicsManager::render(int x, int y, int assetName, int srcX, int srcY)
 {
   Asset *img = assets->getAsset(assetName);
-  tft.pushImage(x, y, img->getW(), img->getH(), img->getBMP());
+  tft.pushImage(y, x, img->getH(), img->getW(), img->getBMP());
 }
 
 // pc version

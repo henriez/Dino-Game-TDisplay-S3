@@ -1,6 +1,4 @@
 #include "AssetsManager.h"
-#include <iostream>
-using namespace std;
 
 // esp32 only
 #include "trex.h"
@@ -18,7 +16,7 @@ AssetsManager* AssetsManager::manager = NULL;
 
 AssetsManager::AssetsManager() {
   // ESP32
-  dino = new Asset(dinoBMP, 54, 54);
+  dino = new Asset(trexBMP, 54, 54);
   crouch = new Asset(crouchBMP, 54, 27);
 
   bird = new Asset(birdBMP, 42, 32);
@@ -58,7 +56,7 @@ AssetsManager::~AssetsManager() {
   delete cactus4;
   delete menu;
   delete background;
-  delete gamover;
+  delete gameover;
 }
 
 AssetsManager* AssetsManager::getInstance() {
