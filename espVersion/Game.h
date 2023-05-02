@@ -1,14 +1,13 @@
 #pragma once
 
-#include <Arduino.h>
 #include "GraphicsManager.h"
 #include "CollisionManager.h"
 #include "Dino.h"
 #include "Cactus.h"
 #include "Bird.h"
 
-#define LEFT_PIN 0
-#define RIGHT_PIN 14
+#define LEFT_PIN 0 // esp32
+#define RIGHT_PIN 14 // esp32
 
 class Game
 {
@@ -23,7 +22,7 @@ public:
     void handleEventsMenu();
 
     void scrollBackground();
-    float calculateDeltaTime();
+    unsigned long calculateDeltaTime();
 
 private:
     Game();
@@ -34,7 +33,7 @@ private:
     Cactus* cactus;
     Bird* bird;
     Dino* dino;
-    float startFrame, start, end;
+    unsigned long start, end, gameStart;
 
     int state;
 };

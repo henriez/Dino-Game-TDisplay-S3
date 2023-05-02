@@ -1,68 +1,98 @@
 #include "AssetsManager.h"
+#include <iostream>
+using namespace std;
 
-#include "background.h"
-#include "bird.h"
+// esp32 only
+#include "trex.h"
+#include "crouch.h"
 #include "cactus1.h"
 #include "cactus2.h"
 #include "cactus3.h"
 #include "cactus4.h"
-#include "crouch.h"
+#include "birdBMP.h"
 #include "menu.h"
-#include "trex.h"
+#include "background.h"
 
-AssetsManager *AssetsManager::manager = NULL;
 
-AssetsManager::AssetsManager()
-{
-    Asset *tmpAsset;
-    tmpAsset = new Asset(trex, 54, 54);
-    assets.insert(std::make_pair("dino", tmpAsset));
-    tmpAsset = new Asset(crouch, 54, 27);
-    assets.insert(std::make_pair("crouch", tmpAsset));
+AssetsManager* AssetsManager::manager = NULL;
 
-    tmpAsset = new Asset(bird, 42, 32);
-    assets.insert(std::make_pair("bird", tmpAsset));
+AssetsManager::AssetsManager() {
+  // ESP32
+  dino = new Asset(dinoBMP, 54, 54);
+  crouch = new Asset(crouchBMP, 54, 27);
 
-    tmpAsset = new Asset(cactus1, 11, 24);
-    assets.insert(std::make_pair("cactus1", tmpAsset));
-    tmpAsset = new Asset(cactus2, 18, 36);
-    assets.insert(std::make_pair("cactus2", tmpAsset));
-    tmpAsset = new Asset(cactus3, 50, 36);
-    assets.insert(std::make_pair("cactus3", tmpAsset));
-    tmpAsset = new Asset(cactus4, 35, 36);
-    assets.insert(std::make_pair("cactus4", tmpAsset));
+  bird = new Asset(birdBMP, 42, 32);
 
-    tmpAsset = new Asset(menu, 320, 170);
-    assets.insert(std::make_pair("menu", tmpAsset));
-    tmpAsset = new Asset(background, 320, 170);
-    assets.insert(std::make_pair("background", tmpAsset));
+  cactus1 = new Asset(cactus1BMP, 11, 24);
+  cactus2 = new Asset(cactus2BMP, 18, 36);
+  cactus3 = new Asset(cactus3BMP, 50, 36);
+  cactus4 = new Asset(cactus4BMP, 35, 36);
+
+  menu = new Asset(menuBMP, 320, 170);
+  background = new Asset(backgroundBMP, 320, 170);
+
+  // PC
+  // dino = new Asset("assets/trex.bmp", 54, 54);
+  // crouch = new Asset("assets/crouch.bmp", 54, 27);
+
+  // bird = new Asset("assets/bird.bmp", 42, 32);
+
+  // cactus1 = new Asset("assets/cactus1.bmp", 11, 24);
+  // cactus2 = new Asset("assets/cactus2.bmp", 18, 36);
+  // cactus3 = new Asset("assets/cactus3.bmp", 50, 36);
+  // cactus4 = new Asset("assets/cactus4.bmp", 35, 36);
+
+  // menu = new Asset("assets/menu.bmp", 320, 170);
+  // background = new Asset("assets/background.bmp", 320, 170);
+
 }
 
-AssetsManager::~AssetsManager()
-{
-    map<string, Asset *>::iterator i;
-    for (i = assets.begin(); i != assets.end(); i++)
-    {
-        delete i->second;
-    }
+AssetsManager::~AssetsManager() {
+  delete dino;
+  delete crouch;
+  delete bird;
+  delete cactus1;
+  delete cactus2;
+  delete cactus3;
+  delete cactus4;
+  delete menu;
+  delete background;
 }
 
-AssetsManager *AssetsManager::getInstance()
-{
-    if (!manager)
-        manager = new AssetsManager();
+AssetsManager* AssetsManager::getInstance() {
+  if (!manager)
+    manager = new AssetsManager();
 
-    return manager;
+  return manager;
 }
 
-void AssetsManager::deleteInstance()
-{
-    if (manager)
-        delete manager;
+void AssetsManager::deleteInstance() {
+  if (manager)
+    delete manager;
 }
 
-Asset *AssetsManager::getAsset(string assetName)
-{
-    return assets[assetName];
+Asset* AssetsManager::getAsset(int assetName) {
+  switch(assetName){
+    case DINO:
+      return dino;
+    case CROUCH:
+      return crouch;
+    case BIRD:
+      return bird;
+    case CACTUS1:
+      return cactus1;
+    case CACTUS2:
+      return cactus2;
+    case CACTUS3:
+      return cactus3;
+    case CACTUS4:
+      return cactus4;
+    case MENU:
+      return menu;
+    case BACKGROUND:
+      return background;
+    default:
+      return nullptr;
+  }
+  
 }
-// ESP32 version

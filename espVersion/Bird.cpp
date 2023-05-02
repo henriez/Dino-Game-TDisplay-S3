@@ -12,20 +12,13 @@ Bird::~Bird()
     delete collider;
 }
 
-// PC version
 void Bird::update()
 {
     collider->x += xSpeed;
     render();
 }
 
-// ESP32 version
-/*
-void Bird::update(){
-
-}*/
-
 void Bird::render()
 {
-    GraphicsManager::getInstance()->render(collider->x, collider->y, "bird");
+    GraphicsManager::getInstance()->render(collider->x, collider->y, BIRD);
 }

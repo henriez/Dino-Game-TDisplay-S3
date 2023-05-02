@@ -85,4 +85,3 @@ Asset* AssetsManager::getAsset(int assetName) {
   }
   
 }
-// ESP32 version

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+//#include <Arduino.h> // esp32
 #include "GraphicsManager.h"
 #include "CollisionManager.h"
 #include "Dino.h"
@@ -34,7 +34,7 @@ private:
     Cactus* cactus;
     Bird* bird;
     Dino* dino;
-    unsigned long startFrame, start, endtime;
+    unsigned long start, end, gameStart;
 
     int state;
 };

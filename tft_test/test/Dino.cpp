@@ -19,7 +19,6 @@ Dino::~Dino()
     delete collider;
 }
 
-// PC version
 void Dino::update()
 {
 
@@ -36,12 +35,6 @@ void Dino::update()
     render();
 }
 
-// ESP32 version
-/*
-void Dino::update(){
-
-}*/
-
 void Dino::render()
 {
     if (state == CROUCH)
@@ -52,12 +45,14 @@ void Dino::render()
 
 void Dino::crouch()
 {
-    state = CROUCH;
+    if (state == GROUND)
+        state = CROUCH;
 }
 
 void Dino::stand()
 {
-    state = GROUND;
+    if (state == CROUCH)
+        state = GROUND;
 }
 
 void Dino::jump()

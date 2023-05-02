@@ -29,7 +29,6 @@ Cactus::~Cactus()
     delete collider;
 }
 
-// PC version
 void Cactus::update() {}
 void Cactus::updateCactus(int x) // CACTO VOLTAR SRC COM RELAÇÃO A POSIÇÃO INICIAL E NÃO +=
 {
@@ -37,11 +36,6 @@ void Cactus::updateCactus(int x) // CACTO VOLTAR SRC COM RELAÇÃO A POSIÇÃO I
     render();
 }
 
-// ESP32 version
-/*
-void Bird::update(){
-
-}*/
 
 void Cactus::render()
 {

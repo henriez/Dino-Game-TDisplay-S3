@@ -10,7 +10,4 @@ void setup() {
 void loop() {
     game->run();
 
-    Game::deleteInstance();
 }
-
-Game::deleteInstance();

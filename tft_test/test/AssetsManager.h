@@ -1,6 +1,6 @@
 #pragma once
 #include "Asset.h"
-#include <Arduino.h>
+//#include <Arduino.h> // esp32
 
 #define DINO 1
 #define CROUCH 2

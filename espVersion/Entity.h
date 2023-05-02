@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Collider.h"
-#include <iostream>
 
 class Entity{
 public:

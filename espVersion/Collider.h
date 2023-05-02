@@ -1,4 +1,4 @@
-    #pragma once
+#pragma once
 
 class Collider
 {
@@ -9,4 +9,4 @@ public:
     float y;
     const int w;
     const int h;
-};  
+};

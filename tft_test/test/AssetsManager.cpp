@@ -1,30 +1,39 @@
 #include "AssetsManager.h"
+#include <iostream>
+using namespace std;
 
-#include "background.h"
-#include "birdBMP.h"
-#include "cactus1.h"
-#include "cactus2.h"
-#include "cactus3.h"
-#include "cactus4.h"
-#include "crouch.h"
-#include "menu.h"
-#include "trex.h"
 
 AssetsManager* AssetsManager::manager = NULL;
 
 AssetsManager::AssetsManager() {
-  dino = new Asset(dinoBMP, 54, 54);
-  crouch = new Asset(crouchBMP, 54, 27);
+  // ESP32
+  // dino = new Asset(dinoBMP, 54, 54);
+  // crouch = new Asset(crouchBMP, 54, 27);
 
-  bird = new Asset(birdBMP, 42, 32);
+  // bird = new Asset(birdBMP, 42, 32);
 
-  cactus1 = new Asset(cactus1BMP, 11, 24);
-  cactus2 = new Asset(cactus2BMP, 18, 36);
-  cactus3 = new Asset(cactus3BMP, 50, 36);
-  cactus4 = new Asset(cactus4BMP, 35, 36);
+  // cactus1 = new Asset(cactus1BMP, 11, 24);
+  // cactus2 = new Asset(cactus2BMP, 18, 36);
+  // cactus3 = new Asset(cactus3BMP, 50, 36);
+  // cactus4 = new Asset(cactus4BMP, 35, 36);
 
-  menu = new Asset(menuBMP, 320, 170);
-  background = new Asset(backgroundBMP, 320, 170);
+  // menu = new Asset(menuBMP, 320, 170);
+  // background = new Asset(backgroundBMP, 320, 170);
+
+  // PC
+  dino = new Asset("assets/trex.bmp", 54, 54);
+  crouch = new Asset("assets/crouch.bmp", 54, 27);
+
+  bird = new Asset("assets/bird.bmp", 42, 32);
+
+  cactus1 = new Asset("assets/cactus1.bmp", 11, 24);
+  cactus2 = new Asset("assets/cactus2.bmp", 18, 36);
+  cactus3 = new Asset("assets/cactus3.bmp", 50, 36);
+  cactus4 = new Asset("assets/cactus4.bmp", 35, 36);
+
+  menu = new Asset("assets/menu.bmp", 320, 170);
+  background = new Asset("assets/background.bmp", 320, 170);
+
 }
 
 AssetsManager::~AssetsManager() {
@@ -76,4 +85,3 @@ Asset* AssetsManager::getAsset(int assetName) {
   }
   
 }
-// ESP32 version
