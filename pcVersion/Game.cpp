@@ -1,137 +1,194 @@
-#include "headers/Game.h"
+#include "Game.h"
 #define FRAMETIME 40
 #define STATE_MENU 1
 #define STATE_RUNNING 2
 
+// pc only
+#define LOW 10
+#define HIGH 11
+
+// pc only: substitutes arduino.h functions
+unsigned long millis()
+{
+  return SDL_GetTicks();
+}
+
+void delay(int ms)
+{
+  SDL_Delay(ms);
+}
+
 Game *Game::game = NULL;
 
-Game::Game() : running(true)
+Game::Game()
+    : running(true)
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    graphics = GraphicsManager::getInstance();
-    collision = CollisionManager::getInstance();
-    dino = new Dino;
-    bird = new Bird;
-    cactus = new Cactus(CACTUS_MODEL_2);
-    state = STATE_MENU;
-    start = end = 0;
+  graphics = GraphicsManager::getInstance();
+
+  collision = CollisionManager::getInstance();
+  dino = new Dino;
+  bird = new Bird;
+  cactus = new Cactus(CACTUS_MODEL_2);
+  state = STATE_MENU;
+  start = end = 0;
 }
 
 Game::~Game()
 {
-    GraphicsManager::deleteInstance();
-    CollisionManager::deleteInstance();
-    delete dino;
-    delete bird;
-    delete cactus;
+  GraphicsManager::deleteInstance();
+  CollisionManager::deleteInstance();
+  delete dino;
+  delete bird;
+  delete cactus;
 }
 
 Game *Game::getInstance()
 {
-    if (!game)
-        game = new Game();
+  if (!game)
+    game = new Game();
 
-    return game;
+  return game;
 }
 
 void Game::deleteInstance()
 {
-    if (game)
-        delete game;
+  if (game)
+    delete game;
 }
 
 void Game::run()
 {
-    while (running)
+  while (running)
+  {
+    graphics->clear();
+    start = millis();
+
+    if (state == STATE_MENU)
     {
-        graphics->clear();
-        start = SDL_GetTicks();
-
-        if (state == STATE_MENU)
-        {
-            handleEventsMenu();
-            graphics->render(0, 0, "menu");
-        }
-        else if (state == STATE_RUNNING)
-        {
-            scrollBackground();
-            handleEvents();
-            dino->update();
-            bird->update();
-            cactus->update();
-        }
-
-        end = SDL_GetTicks();
-        if ((end - start) < FRAMETIME)
-            SDL_Delay(FRAMETIME - (end - start));
-        graphics->present();
+      handleEventsMenu();
+      graphics->render(0, 0, MENU);
     }
+    else if (state == STATE_RUNNING)
+    {
+      
+      scrollBackground(); // como fazer essa na esp?
+      handleEvents();
+      dino->update();
+      bird->update();
+      cactus->update();
+      
+    }
+
+    end = millis();
+    if ((end - start) < FRAMETIME)
+      delay(FRAMETIME - (end - start));
+    graphics->present(); // pc
+  }
 }
 
+// esp32
+/*
 void Game::handleEvents()
 {
-    while (SDL_PollEvent(&event))
+  if (digitalRead(LEFT_PIN) == LOW) //check if its low or high
+    dino->crouch();
+
+  if (digitalRead(RIGHT_PIN) == HIGH) //check if its low or high
+    dino->jump();
+  // if (event.key.keysym.sym == SDLK_s)
+  //  dino->stand();
+}*/
+
+// pc
+void Game::handleEvents()
+{
+  SDL_Event event;
+  while (SDL_PollEvent(&event))
+  {
+    switch (event.type)
     {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case 768:
-            if (event.key.keysym.sym == SDLK_s)
-                dino->crouch();
+    case SDL_QUIT:
+      running = false;
+      break;
+    case 768:
+      if (event.key.keysym.sym == SDLK_s)
+        dino->crouch();
 
-            break;
+      break;
 
-        case 769:
-            if (event.key.keysym.sym == SDLK_w)
-                dino->jump();
-            else if (event.key.keysym.sym == SDLK_s)
-                dino->stand();
+    case 769:
+      if (event.key.keysym.sym == SDLK_w)
+        dino->jump();
+      else if (event.key.keysym.sym == SDLK_s)
+        dino->stand();
 
-            break;
+      break;
 
-        default:
-            break;
-        }
+    default:
+      break;
     }
+  }
 }
 
+// esp32
+/*
 void Game::handleEventsMenu()
 {
-    while (SDL_PollEvent(&event))
+  bool onMenu = false;
+  while (onMenu)
+  {
+    if (digitalRead(RIGHT_PIN))
     {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            running = false;
-            break;
-
-        case 769:
-            if (event.key.keysym.sym == SDLK_w){
-                state = STATE_RUNNING;
-                gameStart = SDL_GetTicks();
-            }
-
-            break;
-
-        default:
-            break;
-        }
+      state = STATE_RUNNING;
+      onMenu = true;
+      start = millis();
     }
+  }
+}*/
+
+// pc
+void Game::handleEventsMenu()
+{
+  SDL_Event event;
+  SDL_PollEvent(&event);
+  switch (event.type)
+  {
+  case SDL_QUIT:
+    running = false;
+    break;
+
+  case 769:
+    if (event.key.keysym.sym == SDLK_w)
+    {
+      state = STATE_RUNNING;
+      gameStart = SDL_GetTicks();
+    }
+
+    break;
+
+  default:
+    break;
+  }
 }
 
 void Game::scrollBackground()
 {
-    end = SDL_GetTicks();
-    Uint32 deltaTime = end - gameStart;
-    double x = 0;
+  end = millis() - gameStart;
+  double x = 0;
+  
+  // x = v0t + at²/2
+  x = 0.12 * end + 0.0000008 * (end * end);
 
-    // x = v0t + at²/2
-    x = 0.12*deltaTime + 0.0000008*(deltaTime*deltaTime);    
+  int srcX = (int)(x) % 320;
+  graphics->render(0, 0, BACKGROUND, srcX);
 
-    int srcX = (int)(x) % 320;
-    graphics->render(0, 0, "background", srcX);
-    
-    cactus->updateCactus(-srcX); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
+  cactus->updateCactus(-x); // PROBLEMA COM INICIALIZACAO, TIMER "END" INICIA CONTAGEM NO MENU (antes de iniciar o jogo)
+}
+
+unsigned long Game::calculateDeltaTime()
+{
+  unsigned long oldTime = end;
+  end = millis();
+  unsigned long deltaTime = end - oldTime;
+  return deltaTime;
 }

@@ -1,6 +1,5 @@
 #pragma once
-#include <map>
-#include <string>
+#include <map> // pc
 #include <SDL2/SDL.h>
 #include "AssetsManager.h"
 
@@ -18,18 +17,20 @@ public:
     static GraphicsManager* getInstance();
 	static void deleteInstance();
 
-    void render(int x, int y, string assetName, int srcX = 0, int srcY = 0);
+    void addTexture(string path, int assetName); // pc
+
+    //void render(int x, int y, int assetName); // esp32
+    void render(int x, int y, int assetName, int srcX=0, int srcY=0); // pc
     void present(); // PC only
     void clear();
-    void addTexture(string path, string assetName);
 
 private:
     GraphicsManager();
     static GraphicsManager* manager;
     AssetsManager* assets;
 
-    //TFT_eSPI tft; // ESP32 version
+    //TFT_eSPI tft0; //esp32 version
     SDL_Renderer* renderer; // PC version
     SDL_Window* window; // PC version
-    map<string, SDL_Texture*> textures; // PC only
+    map<int, SDL_Texture*> textures; // PC only
 };

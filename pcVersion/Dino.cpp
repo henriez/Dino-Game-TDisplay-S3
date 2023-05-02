@@ -1,5 +1,5 @@
-#include "headers/Dino.h"
-#include "headers/GraphicsManager.h"
+#include "Dino.h"
+#include "GraphicsManager.h"
 
 #define gravity 2
 
@@ -45,21 +45,19 @@ void Dino::update(){
 void Dino::render()
 {
     if (state == CROUCH)
-        GraphicsManager::getInstance()->render(collider->x, collider->y + 27, "crouch");
+        GraphicsManager::getInstance()->render(collider->x, collider->y + 27, CROUCH);
     else
-        GraphicsManager::getInstance()->render(collider->x, collider->y, "dino");
+        GraphicsManager::getInstance()->render(collider->x, collider->y, DINO);
 }
 
 void Dino::crouch()
 {
-    if (state == GROUND)
-        state = CROUCH;
+    state = CROUCH;
 }
 
 void Dino::stand()
 {
-    if (state == CROUCH)
-        state = GROUND;
+    state = GROUND;
 }
 
 void Dino::jump()

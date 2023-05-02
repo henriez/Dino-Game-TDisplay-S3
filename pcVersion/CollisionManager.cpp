@@ -1,4 +1,4 @@
-#include "headers/CollisionManager.h"
+#include "CollisionManager.h"
 
 CollisionManager *CollisionManager::manager = NULL;
 

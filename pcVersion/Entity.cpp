@@ -1,4 +1,4 @@
-#include "headers/Entity.h"
+#include "Entity.h"
 
 Entity::Entity(){
     collider = nullptr;

@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "headers/Game.h"
+#include "Game.h"
 
 // sample SDL2 code
 

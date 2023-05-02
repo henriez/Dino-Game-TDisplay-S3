@@ -1,5 +1,5 @@
-#include "headers/Bird.h"
-#include "headers/GraphicsManager.h"
+#include "Bird.h"
+#include "GraphicsManager.h"
 
 Bird::Bird(int y)
 {
@@ -27,5 +27,5 @@ void Bird::update(){
 
 void Bird::render()
 {
-    GraphicsManager::getInstance()->render(collider->x, collider->y, "bird");
+    GraphicsManager::getInstance()->render(collider->x, collider->y, BIRD);
 }

@@ -1,5 +1,5 @@
-#include "headers/Cactus.h"
-#include "headers/GraphicsManager.h"
+#include "Cactus.h"
+#include "GraphicsManager.h"
 
 Cactus::Cactus(int model)
 {
@@ -31,10 +31,9 @@ Cactus::~Cactus()
 
 // PC version
 void Cactus::update() {}
-
 void Cactus::updateCactus(int x) // CACTO VOLTAR SRC COM RELAÇÃO A POSIÇÃO INICIAL E NÃO +=
 {
-    collider->x += x;
+    collider->x = initialPosition + x;
     render();
 }
 
@@ -49,16 +48,16 @@ void Cactus::render()
     switch (model)
     {
     case CACTUS_MODEL_1:
-        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus1");
+        GraphicsManager::getInstance()->render(collider->x, collider->y, CACTUS1);
         break;
     case CACTUS_MODEL_2:
-        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus2");
+        GraphicsManager::getInstance()->render(collider->x, collider->y, CACTUS2);
         break;
     case CACTUS_MODEL_3:
-        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus3");
+        GraphicsManager::getInstance()->render(collider->x, collider->y, CACTUS3);
         break;
     case CACTUS_MODEL_4:
-        GraphicsManager::getInstance()->render(collider->x, collider->y, "cactus4");
+        GraphicsManager::getInstance()->render(collider->x, collider->y, CACTUS4);
         break;
     default:
         break;
