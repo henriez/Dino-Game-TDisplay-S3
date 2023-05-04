@@ -79,8 +79,8 @@ void Game::run() {
   }
 
   end = millis();
-  if ((end - start) < FRAMETIME)
-    delay(FRAMETIME - (end - start));
+  //if ((end - start) < FRAMETIME)
+    //delay(FRAMETIME - (end - start));
 }
 
 // esp32
@@ -94,40 +94,6 @@ void Game::handleEvents() {
   // if (event.key.keysym.sym == SDLK_s)
   //  dino->stand();
 }
-
-// pc
-/*
-void Game::handleEvents()
-{
-  SDL_Event event;
-  while (SDL_PollEvent(&event))
-  {
-    switch (event.type)
-    {
-    case SDL_QUIT:
-      running = false;
-      break;
-    case 768:
-      if (event.key.keysym.sym == SDLK_s)
-        dino->crouch();
-
-      break;
-
-    case 769:
-      if (event.key.keysym.sym == SDLK_w)
-        dino->jump();
-      else if (event.key.keysym.sym == SDLK_s)
-        dino->stand();
-
-      break;
-
-    default:
-      break;
-    }
-  }
-}
-*/
-
 
 void Game::reset() {
   delete dino;
@@ -143,7 +109,6 @@ void Game::reset() {
 void Game::handleEventsMenu() {
   bool onMenu = false;
   while (onMenu) {
-    //Serial.println(digitalRead(RIGHT_PIN));
     if (digitalRead(RIGHT_PIN) == HIGH) {
       state = STATE_RUNNING;
       onMenu = true;
@@ -151,33 +116,6 @@ void Game::handleEventsMenu() {
     }
   }
 }
-
-// pc
-/*
-void Game::handleEventsMenu()
-{
-  SDL_Event event;
-  SDL_PollEvent(&event);
-  switch (event.type)
-  {
-  case SDL_QUIT:
-    running = false;
-    break;
-
-  case 769:
-    if (event.key.keysym.sym == SDLK_w)
-    {
-      state = STATE_RUNNING;
-      gameStart = SDL_GetTicks();
-    }
-
-    break;
-
-  default:
-    break;
-  }
-}
-*/
 
 void Game::scrollBackground() {
   end = millis() - gameStart;
@@ -188,6 +126,7 @@ void Game::scrollBackground() {
 
   int srcX = (int)(x) % 320;
   //graphics->render(0, 0, BACKGROUND, srcX); // nao sei se funciona na esp
+  //criar sprite background e pushSprite em X negativo
 
   cactus->update(-x);
   bird->update(-x);
