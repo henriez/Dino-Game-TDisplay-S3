@@ -2,9 +2,9 @@
 
 #include "Entity.h"
 
-#define HEIGHT1 10
-#define HEIGHT2 25
-#define HEIGHT3 40
+#define HEIGHT1 80
+#define HEIGHT2 95
+#define HEIGHT3 110
 
 class Bird : public Entity{
 public:
@@ -12,7 +12,7 @@ public:
     ~Bird();
     void render();
     void update(double dx);
-    void renew() override;
+    void renew(int info, int px) override;
 
 private:
     int initialPosition;

@@ -4,6 +4,9 @@
 #define STATE_RUNNING 2
 #define STATE_GAMEOVER 3
 
+#define RENEW_CACTUS 4
+#define RENEW_BIRD 5
+
 // pc only
 #define LOW 10
 #define HIGH 11
@@ -23,14 +26,17 @@ Game *Game::game = NULL;
 
 Game::Game() {
   graphics = GraphicsManager::getInstance();
+  Serial.begin(9600);
 
   collision = CollisionManager::getInstance();
   dino = new Dino;
   bird = new Bird;
   cactus = new Cactus;
   state = STATE_MENU;
-  start = end = 0;
+  start = end = right_prev_state = left_prev_state = 0;
+  graphics->clear();
   graphics->render(0, 0, MENU);
+  graphics->present();
 }
 
 Game::~Game() {
@@ -56,64 +62,89 @@ void Game::deleteInstance() {
 void Game::run() {
 
   start = millis();
+  graphics->clear();
 
   if (state == STATE_MENU) {
+    graphics->render(0, 0, MENU);
+    graphics->present();
     handleEventsMenu();
-
   } else if (state == STATE_RUNNING) {
-    graphics->clear();
     scrollBackground();  // como fazer essa na esp?
     handleEvents();
     dino->update();
-    if (collision->collide(dino, cactus) || collision->collide(dino, bird)) {
-      state = STATE_GAMEOVER;
+    if (collision->collide(dino, cactus) || collision->collide(dino, bird))
       reset();
-    }
     if (collision->outOfBounds(cactus))
-      cactus->renew();
+      renew(RENEW_CACTUS);
     if (collision->outOfBounds(bird))
-      bird->renew();
+      renew(RENEW_BIRD);
+    graphics->present();
   } else if (state == STATE_GAMEOVER) {
-    handleEventsMenu();
     graphics->render(0, 0, GAMEOVER);
+    graphics->present();
+    handleEventsMenu();
   }
 
   end = millis();
-  //if ((end - start) < FRAMETIME)
-    //delay(FRAMETIME - (end - start));
+
+  if ((end - start) < FRAMETIME)
+    delay(FRAMETIME - (end - start));
 }
 
-// esp32
-
 void Game::handleEvents() {
-  if (digitalRead(LEFT_PIN) == LOW)  //check if its low or high
+  if (!digitalRead(LEFT_PIN))
     dino->crouch();
 
-  if (digitalRead(RIGHT_PIN) == HIGH)  //check if its low or high
+  if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state)
     dino->jump();
-  // if (event.key.keysym.sym == SDLK_s)
-  //  dino->stand();
+    
+  if (digitalRead(LEFT_PIN) && digitalRead(LEFT_PIN) != left_prev_state)
+    dino->stand();
+
+  left_prev_state = digitalRead(LEFT_PIN);
+  right_prev_state = digitalRead(RIGHT_PIN);
+}
+
+void Game::renew(int entity){
+  end = millis() - gameStart;
+  int px = 0;
+  // define nova posicao e novo modelo de cacto
+  if (entity == RENEW_CACTUS){
+    if (end > 50000){
+      model = rand()%4;
+      cactus->renew(model, px);
+    }
+  }
+  // define nova posicao de passaro
+  else if (entity == RENEW_BIRD){
+    bird->renew(0, px);
+  }
+  lastPosition = px;
 }
 
 void Game::reset() {
-  delete dino;
-  dino = new Dino;
-  delete bird;
-  bird = new Bird;
-  delete cactus;
-  cactus = new Cactus;
+  // delete dino;
+  // dino = new Dino;
+  // delete bird;
+  // bird = new Bird;
+  // delete cactus;
+  // cactus = new Cactus;
+  // state = STATE_GAMEOVER;
+
+  Serial.println("collided!");
 }
 
 // esp32
 
 void Game::handleEventsMenu() {
-  bool onMenu = false;
+  bool onMenu = true;
   while (onMenu) {
-    if (digitalRead(RIGHT_PIN) == HIGH) {
+    if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state) {
       state = STATE_RUNNING;
-      onMenu = true;
-      start = millis();
+      onMenu = false;
+      gameStart = millis();
     }
+    right_prev_state = digitalRead(RIGHT_PIN);
   }
 }
 
@@ -130,11 +161,4 @@ void Game::scrollBackground() {
 
   cactus->update(-x);
   bird->update(-x);
-}
-
-unsigned long Game::calculateDeltaTime() {
-  unsigned long oldTime = end;
-  end = millis();
-  unsigned long deltaTime = end - oldTime;
-  return deltaTime;
 }

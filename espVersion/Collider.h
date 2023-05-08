@@ -7,6 +7,6 @@ public:
     ~Collider(){}
     float x;
     float y;
-    const int w;
-    const int h;
+    int w;
+    int h;
 };

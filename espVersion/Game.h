@@ -6,6 +6,8 @@
 #include "Cactus.h"
 #include "Bird.h"
 
+// #define LEFT_PIN 43 // esp32
+// #define RIGHT_PIN 44 // esp32
 #define LEFT_PIN 0 // esp32
 #define RIGHT_PIN 14 // esp32
 
@@ -21,6 +23,7 @@ public:
     void handleEvents();
     void handleEventsMenu();
     void reset();
+    void renew(int entity);
 
     void scrollBackground();
     unsigned long calculateDeltaTime();
@@ -34,6 +37,7 @@ private:
     Bird* bird;
     Dino* dino;
     unsigned long start, end, gameStart;
+    int nextPosition;
 
-    int state;
+    int state, right_prev_state, left_prev_state;
 };

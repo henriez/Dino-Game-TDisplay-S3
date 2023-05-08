@@ -28,6 +28,4 @@ private:
     static GraphicsManager* manager;
     AssetsManager* assets;
 
-    TFT_eSPI* tft; // esp32
-    TFT_eSprite* sprite;
 };

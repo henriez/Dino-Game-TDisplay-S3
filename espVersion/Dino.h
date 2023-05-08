@@ -8,6 +8,7 @@ public:
     ~Dino();
     void render();
     void update();
+    Collider getCollider() override;
 
     void jump();
     void crouch();
