@@ -24,7 +24,7 @@ void Bird::render()
     GraphicsManager::getInstance()->render(collider->x, collider->y, BIRD);
 }
 
-void Bird::renew(){
+void Bird::renew(int info, int px){
     collider->x = rand()%100 + SCREEN_WIDTH;
     initialPosition += collider->x;
     int h = rand()%3;

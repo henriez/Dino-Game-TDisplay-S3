@@ -22,9 +22,9 @@ public:
     void handleEvents();
     void handleEventsMenu();
     void reset();
+    void renew(int entity);
 
     void scrollBackground();
-    unsigned long calculateDeltaTime();
 
 private:
     Game();
@@ -36,6 +36,7 @@ private:
     Bird* bird;
     Dino* dino;
     unsigned long start, end, gameStart;
+    int lastPosition;
 
     int state;
 };

@@ -20,6 +20,7 @@ public:
     //void addTexture(string path, int assetName); // pc only
 
     void render(int x, int y, int assetName, int srcX=0, int srcY=0);
+    void renderBackground(int dx);
     void present(); // PC only
     void clear();
 

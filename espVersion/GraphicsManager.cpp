@@ -3,11 +3,13 @@ GraphicsManager *GraphicsManager::manager = NULL;
 
 TFT_eSPI tft;  // esp32
 TFT_eSprite sprite = TFT_eSprite(&tft);
+Tft_eSprite background = TFT_eSprite(&tft);
 
 GraphicsManager::GraphicsManager() {
   tft.init();  // esp32 version
   tft.fillScreen(TFT_BLACK);
   sprite.createSprite(SCREEN_HEIGHT, SCREEN_WIDTH);
+  background.createSprite(640, 170);
 
   assets = AssetsManager::getInstance();
 }
@@ -15,6 +17,7 @@ GraphicsManager::GraphicsManager() {
 GraphicsManager::~GraphicsManager() {
   AssetsManager::deleteInstance();
   sprite.deleteSprite();
+  background.deleteSprite();
 }
 
 GraphicsManager *GraphicsManager::getInstance() {
@@ -34,6 +37,7 @@ void GraphicsManager::clear() {
 }
 
 void GraphicsManager::present() {
+  background.pushSprite(0, y);
   sprite.pushSprite(0, 0);
 }
 
@@ -43,3 +47,4 @@ void GraphicsManager::render(int x, int y, int assetName, int srcX, int srcY) {
   Asset *img = assets->getAsset(assetName);
   sprite.pushImage(y, x, img->getH(), img->getW(), img->getBMP());
 }
+

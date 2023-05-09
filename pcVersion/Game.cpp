@@ -4,9 +4,8 @@
 #define STATE_RUNNING 2
 #define STATE_GAMEOVER 3
 
-// pc only
-#define LOW 10
-#define HIGH 11
+#define RENEW_CACTUS 4
+#define RENEW_BIRD 5
 
 // pc only: substitutes arduino.h functions
 unsigned long millis()
@@ -59,15 +58,17 @@ void Game::deleteInstance()
 
 void Game::run()
 {
+
   while (running)
   {
-    graphics->clear();
     start = millis();
+    graphics->clear();
 
     if (state == STATE_MENU)
     {
-      handleEventsMenu();
       graphics->render(0, 0, MENU);
+      graphics->present();
+      handleEventsMenu();
     }
     else if (state == STATE_RUNNING)
     {
@@ -75,25 +76,24 @@ void Game::run()
       handleEvents();
       dino->update();
       if (collision->collide(dino, cactus) || collision->collide(dino, bird))
-      {
-        state = STATE_GAMEOVER;
         reset();
-      }
       if (collision->outOfBounds(cactus))
-        cactus->renew();
+        renew(RENEW_CACTUS);
       if (collision->outOfBounds(bird))
-        bird->renew();
+        renew(RENEW_BIRD);
+      graphics->present();
     }
     else if (state == STATE_GAMEOVER)
     {
-      handleEventsMenu();
       graphics->render(0, 0, GAMEOVER);
+      graphics->present();
+      handleEventsMenu();
     }
 
     end = millis();
+
     if ((end - start) < FRAMETIME)
       delay(FRAMETIME - (end - start));
-    graphics->present(); // pc
   }
 }
 
@@ -151,6 +151,33 @@ void Game::handleEvents()
   }
 }
 
+void Game::renew(int entity)
+{
+  end = millis() - gameStart;
+  int px = SCREEN_WIDTH + rand() % 100; // mudar logica de spawn
+  if (px - lastPosition < 80)
+    px = lastPosition + 80; // minimo de distancia entre cada obstaculo
+  int model;
+  // define nova posicao e novo modelo de cacto
+  if (entity == RENEW_CACTUS)
+  {
+    if (end > 50000)
+    {
+      model = rand() % 4;
+    }
+    else
+      model = rand() % 2;
+
+    cactus->renew(model, px);
+  }
+  // define nova posicao de passaro
+  else if (entity == RENEW_BIRD)
+  {
+    bird->renew(0, px);
+  }
+  lastPosition = px;
+}
+
 // esp32
 /*
 void Game::handleEventsMenu()
@@ -200,18 +227,10 @@ void Game::scrollBackground()
 
   // x = v0t + at²/2
   x = 0.23 * end + 0.0000008 * (end * end);
-
+  lastPosition -= x;
   int srcX = (int)(x) % 320;
   graphics->render(0, 0, BACKGROUND, srcX);
 
   cactus->update(-x);
   bird->update(-x);
-}
-
-unsigned long Game::calculateDeltaTime()
-{
-  unsigned long oldTime = end;
-  end = millis();
-  unsigned long deltaTime = end - oldTime;
-  return deltaTime;
 }

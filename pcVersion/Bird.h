@@ -12,7 +12,7 @@ public:
     ~Bird();
     void render();
     void update(double dx);
-    void renew() override;
+    void renew(int info, int px) override;
 
 private:
     int initialPosition;

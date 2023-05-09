@@ -9,7 +9,8 @@ public:
 
     virtual void render() = 0;
     virtual void renew() {}
-    Collider getCollider() { return *collider; }
+    virtual Collider getCollider() { return *collider; }
+    virtual void renew(int info, int px) {}
 protected:
     Collider* collider;    
 };

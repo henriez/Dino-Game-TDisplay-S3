@@ -107,13 +107,19 @@ void Game::handleEvents() {
 
 void Game::renew(int entity){
   end = millis() - gameStart;
-  int px = 0;
+  int px = SCREEN_WIDTH + rand()%100; // mudar logica de spawn
+  if (px - lastPosition < 80)
+    px = lastPosition + 80; // minimo de distancia entre cada obstaculo
+  int model;
   // define nova posicao e novo modelo de cacto
   if (entity == RENEW_CACTUS){
     if (end > 50000){
       model = rand()%4;
-      cactus->renew(model, px);
     }
+    else
+      model = rand()%2;
+
+    cactus->renew(model, px);
   }
   // define nova posicao de passaro
   else if (entity == RENEW_BIRD){
@@ -154,7 +160,7 @@ void Game::scrollBackground() {
 
   // x = v0t + at²/2
   x = 0.12 * end + 0.0000008 * (end * end);
-
+  lastPosition -= x;
   int srcX = (int)(x) % 320;
   //graphics->render(0, 0, BACKGROUND, srcX); // nao sei se funciona na esp
   //criar sprite background e pushSprite em X negativo

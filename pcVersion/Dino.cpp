@@ -35,6 +35,14 @@ void Dino::update()
     render();
 }
 
+Collider Dino::getCollider(){
+  Collider col = *collider;
+  if (state == CROUCH){
+    col.h /= 2;
+  }
+  return col;
+}
+
 void Dino::render()
 {
     if (state == CROUCH)
@@ -60,6 +68,6 @@ void Dino::jump()
     if (state != AIR)
     {
         state = AIR;
-        ySpeed = -17;
+        ySpeed = -15;
     }
 }

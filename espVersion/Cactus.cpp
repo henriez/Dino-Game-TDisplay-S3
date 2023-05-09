@@ -73,19 +73,19 @@ void Cactus::renew(int info, int px)
     switch (model)
     {
     case CACTUS_MODEL_1:
-        collider = new Collider(320, 36, 11, 24);
+        collider = new Collider(px, 36, 11, 24);
         break;
     case CACTUS_MODEL_2:
-        collider = new Collider(320, 36, 18, 36);
+        collider = new Collider(px, 36, 18, 36);
         break;
     case CACTUS_MODEL_3:
-        collider = new Collider(320, 36, 50, 36);
+        collider = new Collider(px, 36, 50, 36);
         break;
     case CACTUS_MODEL_4:
-        collider = new Collider(320, 36, 35, 36);
+        collider = new Collider(px, 36, 35, 36);
         break;
     default:
         break;
     }
-    // initialPosition += rand()%100 + SCREEN_WIDTH;
+    initialPosition += collider->x;
 }
