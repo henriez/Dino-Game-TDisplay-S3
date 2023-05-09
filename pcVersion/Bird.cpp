@@ -3,9 +3,8 @@
 
 Bird::Bird(int y)
 {
-    collider = new Collider(SCREEN_WIDTH, y, 42, 32);
+    collider = new Collider(480, y, 42, 32);
     xSpeed = -5;
-    initialPosition = 1.5*SCREEN_WIDTH;
 }
 
 Bird::~Bird()
@@ -15,7 +14,7 @@ Bird::~Bird()
 
 void Bird::update(double dx)
 {
-    collider->x = initialPosition + dx;
+    collider->x += dx;
     render();
 }
 
@@ -25,8 +24,7 @@ void Bird::render()
 }
 
 void Bird::renew(int info, int px){
-    collider->x = rand()%100 + SCREEN_WIDTH;
-    initialPosition += collider->x;
+    collider->x = px;
     int h = rand()%3;
     if (h == 0) collider->y = HEIGHT1;
     if (h == 1) collider->y = HEIGHT2;

@@ -30,7 +30,7 @@ void Dino::update()
         ySpeed = 0;
     }
     if (state == AIR)
-        ySpeed += gravity;
+        ySpeed += gravity; // 15 frames para atingir o chao
 
     render();
 }

@@ -25,6 +25,7 @@ public:
     void renew(int entity);
 
     void scrollBackground();
+    unsigned long deltaTime();
 
 private:
     Game();
@@ -36,7 +37,6 @@ private:
     Bird* bird;
     Dino* dino;
     unsigned long start, end, gameStart;
-    int lastPosition;
 
     int state;
 };

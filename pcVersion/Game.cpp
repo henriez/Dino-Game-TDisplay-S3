@@ -118,6 +118,7 @@ void Game::reset()
   bird = new Bird;
   delete cactus;
   cactus = new Cactus;
+  state = STATE_GAMEOVER;
 }
 
 // pc
@@ -153,14 +154,18 @@ void Game::handleEvents()
 
 void Game::renew(int entity)
 {
+  unsigned long t = millis() - gameStart;
+  int minDX = (0.23 + 0.0000016 * t) * (15 * FRAMETIME); // vx * dt (dt = tempo de ar do dino)
+
   end = millis() - gameStart;
   int px = SCREEN_WIDTH + rand() % 100; // mudar logica de spawn
-  if (px - lastPosition < 80)
-    px = lastPosition + 80; // minimo de distancia entre cada obstaculo
   int model;
   // define nova posicao e novo modelo de cacto
   if (entity == RENEW_CACTUS)
   {
+    if (px - bird->getCollider().x < minDX)
+      px = bird->getCollider().x + minDX; // minimo de distancia entre cada obstaculo
+    // cout << "renewing cactus: px = " << px << " | bird.x = " << bird->getCollider().x << endl;
     if (end > 50000)
     {
       model = rand() % 4;
@@ -173,27 +178,12 @@ void Game::renew(int entity)
   // define nova posicao de passaro
   else if (entity == RENEW_BIRD)
   {
+    if (px - cactus->getCollider().x < minDX) // mudar valor para logica com tempo - alcance horizontal
+      px = cactus->getCollider().x + minDX;   // minimo de distancia entre cada obstaculo
+    // cout << "renewing bird: px = " << px << " | cactus.x = " << cactus->getCollider().x << endl;
     bird->renew(0, px);
   }
-  lastPosition = px;
 }
-
-// esp32
-/*
-void Game::handleEventsMenu()
-{
-  bool onMenu = false;
-  while (onMenu)
-  {
-    if (digitalRead(RIGHT_PIN))
-    {
-      state = STATE_RUNNING;
-      onMenu = true;
-      start = millis();
-      cactus->startTimer(start);
-    }
-  }
-}*/
 
 // pc
 void Game::handleEventsMenu()
@@ -222,15 +212,23 @@ void Game::handleEventsMenu()
 
 void Game::scrollBackground()
 {
-  end = millis() - gameStart;
-  double x = 0;
+  unsigned long long t = 0;
+  t = millis() - gameStart;
+  double x = 0, vx = 0, dx = 0;
 
   // x = v0t + at²/2
-  x = 0.23 * end + 0.0000008 * (end * end);
-  lastPosition -= x;
+  x = 0.23 * t + 0.0000008 * (t * t);
+  // v = dx/dt = v0 + at
+  vx = 0.23 + 0.0000016 * t;
+  dx = vx * deltaTime();
   int srcX = (int)(x) % 320;
   graphics->render(0, 0, BACKGROUND, srcX);
 
-  cactus->update(-x);
-  bird->update(-x);
+  cactus->update(-dx);
+  bird->update(-dx);
+}
+
+unsigned long Game::deltaTime()
+{
+  return millis() - end;
 }

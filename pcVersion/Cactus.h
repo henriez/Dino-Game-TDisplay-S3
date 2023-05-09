@@ -16,6 +16,5 @@ public:
     void renew(int info, int px) override;
 
 private:
-    int initialPosition;
     int model;
 };

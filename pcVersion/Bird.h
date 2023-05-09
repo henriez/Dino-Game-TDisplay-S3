@@ -15,6 +15,5 @@ public:
     void renew(int info, int px) override;
 
 private:
-    int initialPosition;
     float xSpeed;
 };
