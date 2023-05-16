@@ -1,5 +1,4 @@
 #pragma once
-//  #include <TFT_eSprite.h> //esp32
 #include <TFT_eSPI.h>
 #include "AssetsManager.h"
 

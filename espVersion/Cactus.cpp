@@ -21,7 +21,6 @@ Cactus::Cactus(int model)
     default:
         break;
     }
-    initialPosition = 320;
 }
 
 Cactus::~Cactus()
@@ -31,7 +30,7 @@ Cactus::~Cactus()
 
 void Cactus::update(double dx) 
 {
-    collider->x = initialPosition + dx;
+    collider->x += dx;
     render();
 }
 
@@ -87,5 +86,4 @@ void Cactus::renew(int info, int px)
     default:
         break;
     }
-    initialPosition += collider->x;
 }

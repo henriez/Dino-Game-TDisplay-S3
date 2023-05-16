@@ -7,21 +7,6 @@
 #define RENEW_CACTUS 4
 #define RENEW_BIRD 5
 
-// pc only
-#define LOW 10
-#define HIGH 11
-
-// pc only: substitutes arduino.h functions
-// unsigned long millis()
-// {
-//   return SDL_GetTicks();
-// }
-
-// void delay(int ms)
-// {
-//   SDL_Delay(ms);
-// }
-
 Game *Game::game = NULL;
 
 Game::Game() {
@@ -69,7 +54,7 @@ void Game::run() {
     graphics->present();
     handleEventsMenu();
   } else if (state == STATE_RUNNING) {
-    scrollBackground();  // como fazer essa na esp?
+    int srcX = scrollBackground();  // como fazer essa na esp?
     handleEvents();
     dino->update();
     if (collision->collide(dino, cactus) || collision->collide(dino, bird))
@@ -78,7 +63,7 @@ void Game::run() {
       renew(RENEW_CACTUS);
     if (collision->outOfBounds(bird))
       renew(RENEW_BIRD);
-    graphics->present();
+    graphics->renderBackground(srcX);
   } else if (state == STATE_GAMEOVER) {
     graphics->render(0, 0, GAMEOVER);
     graphics->present();
@@ -97,7 +82,7 @@ void Game::handleEvents() {
 
   if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state)
     dino->jump();
-    
+
   if (digitalRead(LEFT_PIN) && digitalRead(LEFT_PIN) != left_prev_state)
     dino->stand();
 
@@ -105,37 +90,44 @@ void Game::handleEvents() {
   right_prev_state = digitalRead(RIGHT_PIN);
 }
 
-void Game::renew(int entity){
+void Game::renew(int entity) {
+  unsigned long t = millis() - gameStart;
+  int minDX = (0.6 + 0.000008 * t) * (10 * FRAMETIME);  // vx * dt (dt = tempo de ar do dino)
+
   end = millis() - gameStart;
-  int px = SCREEN_WIDTH + rand()%100; // mudar logica de spawn
-  if (px - lastPosition < 80)
-    px = lastPosition + 80; // minimo de distancia entre cada obstaculo
+  int px = SCREEN_WIDTH + rand() % 100;  // mudar logica de spawn
   int model;
   // define nova posicao e novo modelo de cacto
-  if (entity == RENEW_CACTUS){
-    if (end > 50000){
-      model = rand()%4;
-    }
-    else
-      model = rand()%2;
+  if (entity == RENEW_CACTUS) {
+    if (px - bird->getCollider().x < minDX)
+      px = bird->getCollider().x + minDX;
+    if (end > 50000) {
+      model = rand() % 4;
+    } else
+      model = rand() % 2;
 
     cactus->renew(model, px);
   }
   // define nova posicao de passaro
-  else if (entity == RENEW_BIRD){
+  else if (entity == RENEW_BIRD) {
+    if (px - cactus->getCollider().x < minDX)  // mudar valor para logica com tempo - alcance horizontal
+      px = cactus->getCollider().x + minDX;    // minimo de distancia entre cada obstaculo
     bird->renew(0, px);
   }
-  lastPosition = px;
 }
 
 void Game::reset() {
-  // delete dino;
-  // dino = new Dino;
-  // delete bird;
-  // bird = new Bird;
-  // delete cactus;
-  // cactus = new Cactus;
-  // state = STATE_GAMEOVER;
+  delete dino;
+  dino = new Dino;
+  delete bird;
+  bird = new Bird;
+  delete cactus;
+  cactus = new Cactus;
+  state = STATE_GAMEOVER;
+
+  tone(BUZZER_PIN, 1000, 500);
+  delay(500);
+  noTone(BUZZER_PIN);
 
   Serial.println("collided!");
 }
@@ -144,7 +136,9 @@ void Game::reset() {
 
 void Game::handleEventsMenu() {
   bool onMenu = true;
+  
   while (onMenu) {
+    
     if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state) {
       state = STATE_RUNNING;
       onMenu = false;
@@ -154,17 +148,27 @@ void Game::handleEventsMenu() {
   }
 }
 
-void Game::scrollBackground() {
-  end = millis() - gameStart;
-  double x = 0;
+int Game::scrollBackground() {
+  unsigned long long t = 0;
+  t = millis() - gameStart;
+  double x = 0, vx = 0, dx = 0;
 
   // x = v0t + at²/2
-  x = 0.12 * end + 0.0000008 * (end * end);
-  lastPosition -= x;
+  x = 0.6 * t + 0.000004 * (t * t);
+  // v = dx/dt = v0 + at
+  vx = 0.6 + 0.000008 * t;
+  dx = vx * deltaTime();
   int srcX = (int)(x) % 320;
-  //graphics->render(0, 0, BACKGROUND, srcX); // nao sei se funciona na esp
-  //criar sprite background e pushSprite em X negativo
 
-  cactus->update(-x);
-  bird->update(-x);
+  // graphics->render(0, 0, BACKGROUND, srcX); // nao sei se funciona na esp
+  // criar sprite background e pushSprite em X negativo
+
+  cactus->update(-dx);
+  bird->update(-dx);
+
+  return srcX;
+}
+
+unsigned long Game::deltaTime() {
+  return millis() - end;
 }
