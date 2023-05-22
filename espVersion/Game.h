@@ -6,6 +6,18 @@
 #include "Cactus.h"
 #include "Bird.h"
 
+// little fs para salvar arquivo com pontuacao
+#define USE_LittleFS
+#define CONFIG_LITTLEFS_SPIFFS_COMPAT 1
+
+#include <FS.h>
+#ifdef USE_LittleFS
+  #define SPIFFS LITTLEFS
+  #include <LITTLEFS.h> 
+#else
+  #include <SPIFFS.h>
+#endif 
+
 #define LEFT_PIN 43 // esp32
 #define RIGHT_PIN 16 // esp32
 // #define LEFT_PIN 0 // esp32

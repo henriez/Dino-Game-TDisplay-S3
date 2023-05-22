@@ -2,7 +2,7 @@
 #define FRAMETIME 40
 #define STATE_MENU 1
 #define STATE_RUNNING 2
-#define STATE_GAMEOVER 3
+#define STATE_GAMEOVER 3  
 
 #define RENEW_CACTUS 4
 #define RENEW_BIRD 5
@@ -10,8 +10,15 @@
 Game *Game::game = NULL;
 
 Game::Game() {
+
   graphics = GraphicsManager::getInstance();
   Serial.begin(9600);
+
+  if (LittleFS.begin()) {
+    Serial.println("Falha inicializando littleFS");
+    while (true) 
+      ;
+  }
 
   collision = CollisionManager::getInstance();
   dino = new Dino;
@@ -129,6 +136,35 @@ void Game::reset() {
   delay(500);
   noTone(BUZZER_PIN);
 
+  // checa pontuacao maxima
+  Serial.printf("Writing file: %s\n", "/pontos.txt");
+
+  fs::File file = LittleFS.open("/pontos.txt", "w");
+  if (!file) {
+    Serial.println("Failed to open file for writing");
+    return;
+  }
+  if (file.print("1234")) {
+    Serial.println("File written");
+  } else {
+    Serial.println("Write failed");
+  }
+  // teste writing
+
+  file = LittleFS.open("/pontos.txt", "r");
+  Serial.printf("Reading file: %s\n", "/pontos.txt");
+
+  if (!file || file.isDirectory()) {
+    Serial.println("Failed to open file for reading");
+    return;
+  }
+
+  Serial.print("Read from file: ");
+  while (file.available()) {
+    Serial.write(file.read());
+  }
+  // teste reading
+
   Serial.println("collided!");
 }
 
@@ -136,9 +172,9 @@ void Game::reset() {
 
 void Game::handleEventsMenu() {
   bool onMenu = true;
-  
+
   while (onMenu) {
-    
+
     if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state) {
       state = STATE_RUNNING;
       onMenu = false;
