@@ -1,3 +1,4 @@
+#include <string>
 #include "GraphicsManager.h"
 #include "background.h"
 GraphicsManager *GraphicsManager::manager = NULL;
@@ -8,10 +9,17 @@ TFT_eSprite background = TFT_eSprite(&tft);
 
 GraphicsManager::GraphicsManager() {
   tft.init();  // esp32 version
+  tft.setSwapBytes(true);
+  tft.setRotation(1);  
   tft.fillScreen(TFT_BLACK);
-  sprite.createSprite(SCREEN_HEIGHT, SCREEN_WIDTH);
+  tft.setTextColor(TFT_WHITE);
+
+  sprite.createSprite(320,170);
+  sprite.setSwapBytes(true);
+  sprite.setTextSize(2);
+
   background.createSprite(640, 170);
-  background.pushImage(0, 0, 170, 640, backgroundBMP);
+  background.pushImage(0, 0, 640, 170, backgroundBMP);
 
   assets = AssetsManager::getInstance();
 }
@@ -47,9 +55,13 @@ void GraphicsManager::present() {
 // ESP32 version
 void GraphicsManager::render(int x, int y, int assetName, int srcX, int srcY) {
   Asset *img = assets->getAsset(assetName);
-  sprite.pushImage(y, x, img->getH(), img->getW(), img->getBMP());
+  sprite.pushImage(x, y, img->getW(), img->getH(), img->getBMP());
 }
 
 void GraphicsManager::renderBackground(int dx) {
   sprite.pushSprite(0, 0);
+}
+
+void GraphicsManager::renderText(int x, int y, String str){
+  sprite.drawString(str, x, y);
 }

@@ -2,9 +2,9 @@
 
 #include "Entity.h"
 
-#define HEIGHT1 80
-#define HEIGHT2 95
-#define HEIGHT3 110
+#define HEIGHT1 10
+#define HEIGHT2 35
+#define HEIGHT3 60
 
 class Bird : public Entity{
 public:

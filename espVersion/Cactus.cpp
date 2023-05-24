@@ -7,16 +7,16 @@ Cactus::Cactus(int model)
     switch (model)
     {
     case CACTUS_MODEL_1:
-        collider = new Collider(320, 36, 11, 24);
+        collider = new Collider(320, 106, 11, 24);
         break;
     case CACTUS_MODEL_2:
-        collider = new Collider(320, 36, 18, 36);
+        collider = new Collider(320, 94, 18, 36);
         break;
     case CACTUS_MODEL_3:
-        collider = new Collider(320, 36, 50, 36);
+        collider = new Collider(320, 94, 50, 36);
         break;
     case CACTUS_MODEL_4:
-        collider = new Collider(320, 36, 35, 36);
+        collider = new Collider(320, 94, 35, 36);
         break;
     default:
         break;
@@ -72,16 +72,16 @@ void Cactus::renew(int info, int px)
     switch (model)
     {
     case CACTUS_MODEL_1:
-        collider = new Collider(px, 36, 11, 24);
+        collider = new Collider(px, 106, 11, 24);
         break;
     case CACTUS_MODEL_2:
-        collider = new Collider(px, 36, 18, 36);
+        collider = new Collider(px, 94, 18, 36);
         break;
     case CACTUS_MODEL_3:
-        collider = new Collider(px, 36, 50, 36);
+        collider = new Collider(px, 94, 50, 36);
         break;
     case CACTUS_MODEL_4:
-        collider = new Collider(px, 36, 35, 36);
+        collider = new Collider(px, 94, 35, 36);
         break;
     default:
         break;

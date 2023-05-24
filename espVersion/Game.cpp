@@ -1,8 +1,10 @@
+#include <string>
+#include "FS.h"
 #include "Game.h"
 #define FRAMETIME 40
 #define STATE_MENU 1
 #define STATE_RUNNING 2
-#define STATE_GAMEOVER 3  
+#define STATE_GAMEOVER 3
 
 #define RENEW_CACTUS 4
 #define RENEW_BIRD 5
@@ -13,19 +15,30 @@ Game::Game() {
 
   graphics = GraphicsManager::getInstance();
   Serial.begin(9600);
-
-  if (LittleFS.begin()) {
-    Serial.println("Falha inicializando littleFS");
-    while (true) 
-      ;
+  if (!SPIFFS.begin()) {
+    Serial.println("failed starting spiffs");
   }
+
 
   collision = CollisionManager::getInstance();
   dino = new Dino;
   bird = new Bird;
   cactus = new Cactus;
   state = STATE_MENU;
-  start = end = right_prev_state = left_prev_state = 0;
+  start = end = right_prev_state = left_prev_state = points = 0;
+
+  fs::File file = SPIFFS.open("/pontos.txt", "r");
+
+  if (!file) {
+    Serial.println("− failed to open file for reading");
+    return;
+  }
+
+  Serial.println("− read max from file:");
+  maxPoints = file.readString().toInt();
+  Serial.printf("maxpoints: %d\n", maxPoints);
+  file.close();
+
   graphics->clear();
   graphics->render(0, 0, MENU);
   graphics->present();
@@ -70,9 +83,14 @@ void Game::run() {
       renew(RENEW_CACTUS);
     if (collision->outOfBounds(bird))
       renew(RENEW_BIRD);
+    graphics->renderText(10, 10, String(points));
+    graphics->renderText(250, 10, "HI:");
+    graphics->renderText(290, 10, String(maxPoints));
     graphics->renderBackground(srcX);
   } else if (state == STATE_GAMEOVER) {
     graphics->render(0, 0, GAMEOVER);
+    graphics->renderText(125, 10, "Points");
+    graphics->renderText(150, 35, String(points));
     graphics->present();
     handleEventsMenu();
   }
@@ -98,6 +116,7 @@ void Game::handleEvents() {
 }
 
 void Game::renew(int entity) {
+  points++;
   unsigned long t = millis() - gameStart;
   int minDX = (0.6 + 0.000008 * t) * (10 * FRAMETIME);  // vx * dt (dt = tempo de ar do dino)
 
@@ -132,38 +151,39 @@ void Game::reset() {
   cactus = new Cactus;
   state = STATE_GAMEOVER;
 
-  tone(BUZZER_PIN, 1000, 500);
+  //tone(BUZZER_PIN, 1000, 500);
   delay(500);
-  noTone(BUZZER_PIN);
+  //noTone(BUZZER_PIN);
 
-  // checa pontuacao maxima
-  Serial.printf("Writing file: %s\n", "/pontos.txt");
+  fs::File file;
 
-  fs::File file = LittleFS.open("/pontos.txt", "w");
+  if (points > maxPoints) {
+    maxPoints = points;
+    file = SPIFFS.open("/pontos.txt", "w");
+    if (!file) {
+      Serial.println("− failed to open file for writing");
+      return;
+    }
+    Serial.println(std::to_string(points).c_str());
+    if (file.println(std::to_string(points).c_str())) {
+      Serial.println("− file written");
+    } else {
+      Serial.println("− write failed");
+    }
+
+    file.close();
+  }
+
+  file = SPIFFS.open("/pontos.txt", "r");
+
   if (!file) {
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-  if (file.print("1234")) {
-    Serial.println("File written");
-  } else {
-    Serial.println("Write failed");
-  }
-  // teste writing
-
-  file = LittleFS.open("/pontos.txt", "r");
-  Serial.printf("Reading file: %s\n", "/pontos.txt");
-
-  if (!file || file.isDirectory()) {
-    Serial.println("Failed to open file for reading");
+    Serial.println("− failed to open file for reading");
     return;
   }
 
-  Serial.print("Read from file: ");
-  while (file.available()) {
-    Serial.write(file.read());
-  }
-  // teste reading
+  Serial.println("− read from file:");
+  Serial.println(file.readString());
+  file.close();
 
   Serial.println("collided!");
 }
@@ -182,6 +202,7 @@ void Game::handleEventsMenu() {
     }
     right_prev_state = digitalRead(RIGHT_PIN);
   }
+  points = 0;
 }
 
 int Game::scrollBackground() {

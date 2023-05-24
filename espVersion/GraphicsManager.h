@@ -20,6 +20,7 @@ public:
 
     void render(int x, int y, int assetName, int srcX=0, int srcY=0);
     void renderBackground(int dx);
+    void renderText(int x, int y, String str);
     void present(); // PC only
     void clear();
 

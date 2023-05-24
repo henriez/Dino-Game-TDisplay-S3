@@ -30,20 +30,6 @@ AssetsManager::AssetsManager() {
   background = new Asset(backgroundBMP, 320, 170);
   gameover = new Asset(gameoverBMP, 320, 170);
 
-  // PC
-  // dino = new Asset("assets/trex.bmp", 54, 54);
-  // crouch = new Asset("assets/crouch.bmp", 54, 27);
-
-  // bird = new Asset("assets/bird.bmp", 42, 32);
-
-  // cactus1 = new Asset("assets/cactus1.bmp", 11, 24);
-  // cactus2 = new Asset("assets/cactus2.bmp", 18, 36);
-  // cactus3 = new Asset("assets/cactus3.bmp", 50, 36);
-  // cactus4 = new Asset("assets/cactus4.bmp", 35, 36);
-
-  // menu = new Asset("assets/menu.bmp", 320, 170);
-  // background = new Asset("assets/background.bmp", 320, 170);
-
 }
 
 AssetsManager::~AssetsManager() {

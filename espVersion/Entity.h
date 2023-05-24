@@ -12,4 +12,5 @@ public:
     virtual void renew(int info, int px) {}
 protected:
     Collider* collider;    
+    int state;
 };
