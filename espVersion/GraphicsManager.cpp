@@ -1,35 +1,41 @@
-#include <string>
 #include "GraphicsManager.h"
-#include "background.h"
+
+// Static private pointer initialization
 GraphicsManager *GraphicsManager::manager = NULL;
 
-TFT_eSPI tft;  // esp32
-TFT_eSprite sprite = TFT_eSprite(&tft);
-TFT_eSprite background = TFT_eSprite(&tft);
+// TFT_eSPI renderer
+TFT_eSPI tft;
 
+/** TFT_eSprite
+  * All assets are pushed to the sprite and then the sprite is 
+  * pushed to the renderer, to avoid flickering
+  */
+TFT_eSprite sprite = TFT_eSprite(&tft);
+
+// Singleton Private constructor
 GraphicsManager::GraphicsManager() {
-  tft.init();  // esp32 version
-  tft.setSwapBytes(true);
-  tft.setRotation(1);  
+  tft.init();
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE);
 
-  sprite.createSprite(320,170);
+  // Rotates all coordinates system
+  tft.setSwapBytes(true);
+  tft.setRotation(1);
+
+  sprite.createSprite(320, 170);
   sprite.setSwapBytes(true);
   sprite.setTextSize(2);
-
-  background.createSprite(640, 170);
-  background.pushImage(0, 0, 640, 170, backgroundBMP);
 
   assets = AssetsManager::getInstance();
 }
 
+// Destructor
 GraphicsManager::~GraphicsManager() {
   AssetsManager::deleteInstance();
   sprite.deleteSprite();
-  background.deleteSprite();
 }
 
+// Singlethon method
 GraphicsManager *GraphicsManager::getInstance() {
   if (!manager)
     manager = new GraphicsManager();
@@ -37,31 +43,29 @@ GraphicsManager *GraphicsManager::getInstance() {
   return manager;
 }
 
+// Singleton method
 void GraphicsManager::deleteInstance() {
   if (manager)
     delete manager;
 }
 
+// Clear sprite for next rendering proccess
 void GraphicsManager::clear() {
-  sprite.fillSprite(TFT_BLACK);  // ESP32 version
-  render(0, 0, BACKGROUND);
+  sprite.fillSprite(TFT_BLACK);
 }
 
+// Push sprite to screen
 void GraphicsManager::present() {
   sprite.pushSprite(0, 0);
 }
 
-
-// ESP32 version
-void GraphicsManager::render(int x, int y, int assetName, int srcX, int srcY) {
+// Render asset at (x,y)
+void GraphicsManager::render(int x, int y, int assetName) {
   Asset *img = assets->getAsset(assetName);
   sprite.pushImage(x, y, img->getW(), img->getH(), img->getBMP());
 }
 
-void GraphicsManager::renderBackground(int dx) {
-  sprite.pushSprite(0, 0);
-}
-
-void GraphicsManager::renderText(int x, int y, String str){
+// Render text at (x,y)
+void GraphicsManager::renderText(int x, int y, String str) {
   sprite.drawString(str, x, y);
 }

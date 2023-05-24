@@ -6,41 +6,68 @@
 #include "Cactus.h"
 #include "Bird.h"
 
-#include <SPIFFS.h>
-#include <FS.h>
+// Macros for ESP32 pins
+#define LEFT_PIN 43 
+#define RIGHT_PIN 16
+#define BUZZER_PIN 18
 
-#define LEFT_PIN 43 // esp32
-#define RIGHT_PIN 16 // esp32
-
-#define BUZZER_PIN 18  
-
-class Game
-{
+class Game {
 public:
-    ~Game();
+  // Destructor
+  ~Game();
 
-    static Game *getInstance();
-    static void deleteInstance();
+  // Singleton method
+  static Game* getInstance();
 
-    void run();
-    void handleEvents();
-    void handleEventsMenu();
-    void reset();
-    void renew(int entity);
+  // Singleton method
+  static void deleteInstance();
 
-    int scrollBackground();
-    unsigned long deltaTime();
+  // Main function inside Game, checks states, calls update, render and renew
+  void run();
+
+  // Handle inputs depending on state
+  void handleEvents();
+
+  // Reuse obstacles when they go out of bounds
+  void renew(int entity);
+
+  // Reset entities and change state to STATE_GAMEOVER
+  void reset();
+
+  // Check current score and save if necessary
+  void checkScore();
+
+  // Return distance traveled based on time and basic physics
+  int scrollBackground();
+
+  // Return deltaTime between current and last frame
+  unsigned long deltaTime();
 
 private:
-    Game();
-    static Game *game;
-    GraphicsManager* graphics;
-    CollisionManager* collision;
-    Cactus* cactus;
-    Bird* bird;
-    Dino* dino;
-    unsigned long start, end, gameStart;
+  // Singleton requires private constructor
+  Game();
 
-    int state, right_prev_state, left_prev_state;
-    int points, maxPoints;
+  // Singleton static pointer
+  static Game* game;
+  
+  // Managers
+  GraphicsManager* graphics;
+  CollisionManager* collision;
+
+  // Entities
+  Cactus* cactus;
+  Bird* bird;
+  Dino* dino;
+
+  // Time handling variables
+  unsigned long start, end, gameStart;
+
+  // State handling variables
+  int state, right_prev_state, left_prev_state;
+
+  // Score handling variables
+  int score, maxScore;
+
+  // Used for dealing with background scroll and general entities movement 
+  int px;
 };

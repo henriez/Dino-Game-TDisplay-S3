@@ -1,7 +1,11 @@
-#include <string>
-#include "FS.h"
 #include "Game.h"
+
+#include <SPIFFS.h>
+#include <FS.h>
+
+
 #define FRAMETIME 40
+
 #define STATE_MENU 1
 #define STATE_RUNNING 2
 #define STATE_GAMEOVER 3
@@ -9,41 +13,41 @@
 #define RENEW_CACTUS 4
 #define RENEW_BIRD 5
 
+// Static private pointer initialization
 Game *Game::game = NULL;
 
+// Private constructor
 Game::Game() {
 
   graphics = GraphicsManager::getInstance();
-  Serial.begin(9600);
-  if (!SPIFFS.begin()) {
-    Serial.println("failed starting spiffs");
-  }
-
-
   collision = CollisionManager::getInstance();
+
+  Serial.begin(9600);
+
+  // Get maxScore saved
+  SPIFFS.begin();
+  fs::File file = SPIFFS.open("/pontos.txt", "r");
+  if (!file)
+    Serial.println("Couldn't open score file for reading");
+  else
+    maxScore = file.readString().toInt();
+  file.close();
+
+  // Create entities
   dino = new Dino;
   bird = new Bird;
   cactus = new Cactus;
+
   state = STATE_MENU;
-  start = end = right_prev_state = left_prev_state = points = 0;
+  start = end = right_prev_state = left_prev_state = score = px = 0;
 
-  fs::File file = SPIFFS.open("/pontos.txt", "r");
-
-  if (!file) {
-    Serial.println("− failed to open file for reading");
-    return;
-  }
-
-  Serial.println("− read max from file:");
-  maxPoints = file.readString().toInt();
-  Serial.printf("maxpoints: %d\n", maxPoints);
-  file.close();
-
+  // Starts menu
   graphics->clear();
-  graphics->render(0, 0, MENU);
+  graphics->render(0, 0, ASSET_MENU);
   graphics->present();
 }
 
+// Destructor
 Game::~Game() {
   GraphicsManager::deleteInstance();
   CollisionManager::deleteInstance();
@@ -52,6 +56,7 @@ Game::~Game() {
   delete cactus;
 }
 
+// Singleton method
 Game *Game::getInstance() {
   if (!game)
     game = new Game();
@@ -59,89 +64,121 @@ Game *Game::getInstance() {
   return game;
 }
 
+// Singleton method
 void Game::deleteInstance() {
   if (game)
     delete game;
 }
 
+// Main function inside Game, checks states, calls update, render and renew
 void Game::run() {
 
   start = millis();
+
   graphics->clear();
 
-  if (state == STATE_MENU) {
-    graphics->render(0, 0, MENU);
-    graphics->present();
-    handleEventsMenu();
-  } else if (state == STATE_RUNNING) {
-    int srcX = scrollBackground();  // como fazer essa na esp?
-    handleEvents();
+  handleEvents();
+
+  if (state == STATE_RUNNING) {
+    int dx = scrollBackground();
+    px += dx;
+    px %= 320;
+    graphics->render(-px, 110, ASSET_BACKGROUND);
+
+
     dino->update();
-    if (collision->collide(dino, cactus) || collision->collide(dino, bird))
-      reset();
+    cactus->update(-dx);
+    bird->update(-dx);
+
+    dino->render();
+    cactus->render();
+    bird->render();
+
+    graphics->renderText(10, 10, String(score));
+    graphics->renderText(250, 10, "HI:");
+    graphics->renderText(290, 10, String(maxScore));
+
     if (collision->outOfBounds(cactus))
       renew(RENEW_CACTUS);
     if (collision->outOfBounds(bird))
       renew(RENEW_BIRD);
-    graphics->renderText(10, 10, String(points));
-    graphics->renderText(250, 10, "HI:");
-    graphics->renderText(290, 10, String(maxPoints));
-    graphics->renderBackground(srcX);
-  } else if (state == STATE_GAMEOVER) {
-    graphics->render(0, 0, GAMEOVER);
-    graphics->renderText(125, 10, "Points");
-    graphics->renderText(150, 35, String(points));
-    graphics->present();
-    handleEventsMenu();
+    if (collision->collide(dino, cactus) || collision->collide(dino, bird))
+      reset();
   }
 
-  end = millis();
 
+  graphics->present();
+
+  // Sets max FPS
+  end = millis();
   if ((end - start) < FRAMETIME)
     delay(FRAMETIME - (end - start));
 }
 
+// Handle inputs depending on state
 void Game::handleEvents() {
-  if (!digitalRead(LEFT_PIN))
-    dino->crouch();
+  if (state == STATE_RUNNING) {
+    if (!digitalRead(LEFT_PIN))
+      dino->crouch();
 
-  if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state)
-    dino->jump();
+    if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state)
+      dino->jump();
 
-  if (digitalRead(LEFT_PIN) && digitalRead(LEFT_PIN) != left_prev_state)
-    dino->stand();
+    if (digitalRead(LEFT_PIN) && digitalRead(LEFT_PIN) != left_prev_state)
+      dino->stand();
 
-  left_prev_state = digitalRead(LEFT_PIN);
-  right_prev_state = digitalRead(RIGHT_PIN);
+    left_prev_state = digitalRead(LEFT_PIN);
+    right_prev_state = digitalRead(RIGHT_PIN);
+  } else {  // STATE_GAMEOVER OR STATE_MENU
+    bool onMenu = true;
+
+    while (onMenu) {
+
+      if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state) {
+        state = STATE_RUNNING;
+        onMenu = false;
+        gameStart = millis();
+      }
+      right_prev_state = digitalRead(RIGHT_PIN);
+    }
+    score = 0;
+  }
 }
 
+// Reuse obstacles when they go out of bounds
 void Game::renew(int entity) {
-  points++;
-  unsigned long t = millis() - gameStart;
-  int minDX = (0.6 + 0.000008 * t) * (10 * FRAMETIME);  // vx * dt (dt = tempo de ar do dino)
+  score++;
 
-  end = millis() - gameStart;
-  int px = SCREEN_WIDTH + rand() % 100;  // mudar logica de spawn
+  unsigned long t = millis() - gameStart;
+
+  // min distance between obstacles is roughly 1/3 the distance traveled by the player in one jump
+  int minDX = (0.6 + 0.000008 * t) * (10 * FRAMETIME);
+
+  // try new position
+  int px = SCREEN_WIDTH + rand() % 100;
   int model;
-  // define nova posicao e novo modelo de cacto
+
   if (entity == RENEW_CACTUS) {
     if (px - bird->getCollider().x < minDX)
       px = bird->getCollider().x + minDX;
-    if (end > 50000) {
+
+    // cactus models 3 and 4 are bigger, spawn only after score 35
+    if (score > 35)
       model = rand() % 4;
-    } else
+    else
       model = rand() % 2;
 
     cactus->renew(model, px);
   }
-  // define nova posicao de passaro
+
   else if (entity == RENEW_BIRD) {
-    if (px - cactus->getCollider().x < minDX)  // mudar valor para logica com tempo - alcance horizontal
-      px = cactus->getCollider().x + minDX;    // minimo de distancia entre cada obstaculo
+    if (px - cactus->getCollider().x < minDX)
+      px = cactus->getCollider().x + minDX;
     bird->renew(0, px);
   }
 }
 
+// Reset entities and change state to STATE_GAMEOVER
 void Game::reset() {
   delete dino;
   dino = new Dino;
@@ -149,83 +186,57 @@ void Game::reset() {
   bird = new Bird;
   delete cactus;
   cactus = new Cactus;
+
   state = STATE_GAMEOVER;
+
+  graphics->clear();
+  graphics->render(0, 0, ASSET_GAMEOVER);
+  graphics->renderText(125, 10, "score");
+  graphics->renderText(150, 35, String(score));
 
   //tone(BUZZER_PIN, 1000, 500);
   delay(500);
   //noTone(BUZZER_PIN);
 
+  checkScore();
+}
+
+// Check current score and save if necessary
+void Game::checkScore() {
   fs::File file;
 
-  if (points > maxPoints) {
-    maxPoints = points;
+  if (score > maxScore) {
+    maxScore = score;
+
     file = SPIFFS.open("/pontos.txt", "w");
+
     if (!file) {
-      Serial.println("− failed to open file for writing");
+      Serial.println("Couldn't open score file for writing");
       return;
     }
-    Serial.println(std::to_string(points).c_str());
-    if (file.println(std::to_string(points).c_str())) {
-      Serial.println("− file written");
-    } else {
-      Serial.println("− write failed");
-    }
+
+    file.println(std::to_string(score).c_str());
 
     file.close();
   }
-
-  file = SPIFFS.open("/pontos.txt", "r");
-
-  if (!file) {
-    Serial.println("− failed to open file for reading");
-    return;
-  }
-
-  Serial.println("− read from file:");
-  Serial.println(file.readString());
-  file.close();
-
-  Serial.println("collided!");
 }
 
-// esp32
-
-void Game::handleEventsMenu() {
-  bool onMenu = true;
-
-  while (onMenu) {
-
-    if (!digitalRead(RIGHT_PIN) && digitalRead(RIGHT_PIN) != right_prev_state) {
-      state = STATE_RUNNING;
-      onMenu = false;
-      gameStart = millis();
-    }
-    right_prev_state = digitalRead(RIGHT_PIN);
-  }
-  points = 0;
-}
-
+// Return distance traveled based on time and basic physics
 int Game::scrollBackground() {
   unsigned long long t = 0;
   t = millis() - gameStart;
   double x = 0, vx = 0, dx = 0;
 
   // x = v0t + at²/2
-  x = 0.6 * t + 0.000004 * (t * t);
+  x = 0.8 * t + 0.000004 * (t * t);
   // v = dx/dt = v0 + at
-  vx = 0.6 + 0.000008 * t;
+  vx = 0.8 + 0.000008 * t;
   dx = vx * deltaTime();
-  int srcX = (int)(x) % 320;
 
-  // graphics->render(0, 0, BACKGROUND, srcX); // nao sei se funciona na esp
-  // criar sprite background e pushSprite em X negativo
-
-  cactus->update(-dx);
-  bird->update(-dx);
-
-  return srcX;
+  return dx;
 }
 
+// Return deltaTime between current and last frame
 unsigned long Game::deltaTime() {
   return millis() - end;
 }

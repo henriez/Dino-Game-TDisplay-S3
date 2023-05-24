@@ -2,15 +2,26 @@
 
 #include "Collider.h"
 
-class Entity{
+// Cactus, Bird and Dino's parent class
+class Entity {
 public:
-    Entity();
-    ~Entity();
+  // Constructor
+  Entity() : collider(nullptr) {}
 
-    virtual void render() = 0;
-    virtual Collider getCollider() { return *collider; }
-    virtual void renew(int info, int px) {}
+  // Destructor
+  ~Entity() {}
+
+  // Render abstract method
+  virtual void render() = 0;
+
+  // Returns collider
+  virtual Collider getCollider() {
+    return *collider;
+  }
+
+  // Renew abstract method - redefined in Cactus and Bird
+  virtual void renew(int info, int px) {}
 protected:
-    Collider* collider;    
-    int state;
+  // Collider for dealing with collisions
+  Collider* collider;
 };

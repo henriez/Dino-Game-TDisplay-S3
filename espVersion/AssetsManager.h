@@ -2,33 +2,40 @@
 #include "Asset.h"
 #include <Arduino.h> // esp32
 
-#define DINO 1
-#define CROUCH 2
-#define CACTUS1 3
-#define CACTUS2 4
-#define CACTUS3 5
-#define CACTUS4 6
-#define BIRD 7
-#define MENU 8
-#define BACKGROUND 9
-#define GAMEOVER 10
-
-using namespace std;
+#define ASSET_DINO 1
+#define ASSET_CROUCH 2
+#define ASSET_CACTUS1 3
+#define ASSET_CACTUS2 4
+#define ASSET_CACTUS3 5
+#define ASSET_CACTUS4 6
+#define ASSET_BIRD 7
+#define ASSET_MENU 8
+#define ASSET_BACKGROUND 9
+#define ASSET_GAMEOVER 10
 
 
 class AssetsManager {
 public:
-
+  // Destructor
   ~AssetsManager();
 
+  // Singleton method
   static AssetsManager* getInstance();
+
+  // Singleton method
   static void deleteInstance();
 
+  // Return an asset based on name
   Asset* getAsset(int assetName);
 
 private:
+  // Singleton requires private constructor
   AssetsManager();
+
+  // Singleton static pointer
   static AssetsManager* manager;
+
+  // Assets
   Asset* dino;
   Asset* crouch;
   Asset* bird;

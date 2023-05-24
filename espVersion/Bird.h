@@ -2,19 +2,25 @@
 
 #include "Entity.h"
 
+// Macros for different possible spawn positions
 #define HEIGHT1 10
 #define HEIGHT2 35
 #define HEIGHT3 60
 
-class Bird : public Entity{
+class Bird : public Entity {
 public:
-    Bird(int y = HEIGHT1);
-    ~Bird();
-    void render();
-    void update(double dx);
-    void renew(int info, int px) override;
+  // Constructor
+  Bird(int y = HEIGHT1);
 
-private:
-    int initialPosition;
-    float xSpeed;
+  // Destructor
+  ~Bird();
+
+  // Update position based on traveled distance received
+  void update(double dx);
+
+  // Render calling graphics manager
+  void render();
+
+  // Renew based on new height and position
+  void renew(int info, int px) override;
 };

@@ -4,29 +4,41 @@
 
 using namespace std;
 
-#define SCREEN_WIDTH 320 
+// Macros for screen dimensions
+#define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 170
 
-
-class GraphicsManager
-{
+class GraphicsManager {
 public:
-    ~GraphicsManager();
+  // Destructor
+  ~GraphicsManager();
 
-    static GraphicsManager* getInstance();
-	static void deleteInstance();
+  // Singleton method
+  static GraphicsManager* getInstance();
 
-    //void addTexture(string path, int assetName); // pc only
+  // Singleton method
+  static void deleteInstance();
 
-    void render(int x, int y, int assetName, int srcX=0, int srcY=0);
-    void renderBackground(int dx);
-    void renderText(int x, int y, String str);
-    void present(); // PC only
-    void clear();
+  // Render asset at (x,y)
+  void render(int x, int y, int assetName);
+
+  // Render text at (x,y)
+  void renderText(int x, int y, String str);
+
+  // Push sprite to screen
+  void present();
+
+  // Clear sprite for next rendering proccess
+  void clear();
 
 private:
-    GraphicsManager();
-    static GraphicsManager* manager;
-    AssetsManager* assets;
+  // Singleton requires private constructor
+  GraphicsManager();
+
+  // Singleton static pointer
+  static GraphicsManager* manager;
+
+  // Assets manager intermediates images PROGMEM pointers
+  AssetsManager* assets;
 
 };

@@ -3,63 +3,71 @@
 
 #define gravity 2
 
-#define GROUND 1
-#define CROUCH 2
-#define AIR 3
+// Macros for state handling
+#define STATE_GROUND 1
+#define STATE_CROUCH 2
+#define STATE_AIR 3
 
+// Constructor
 Dino::Dino() {
   collider = new Collider(40, 80, 54, 54);
-  state = GROUND;
+  state = STATE_GROUND;
   ySpeed = 0;
 }
 
+// Destructor
 Dino::~Dino() {
   delete collider;
 }
 
+// Updates position and state
 void Dino::update() {
 
   collider->y += ySpeed;
   if (collider->y > 80) {
     collider->y = 80;
-    state = GROUND;
+    state = STATE_GROUND;
     ySpeed = 0;
   }
-  if (state == AIR)
+  if (state == STATE_AIR)
     ySpeed += gravity;
 
-  render();
 }
 
+// Render calling graphics manager
 void Dino::render() {
-  if (state == CROUCH)
-    GraphicsManager::getInstance()->render(collider->x, collider->y + 27, CROUCH);
+  if (state == STATE_CROUCH)
+    GraphicsManager::getInstance()->render(collider->x, collider->y + 27, STATE_CROUCH);
   else
-    GraphicsManager::getInstance()->render(collider->x, collider->y, DINO);
+    GraphicsManager::getInstance()->render(collider->x, collider->y, ASSET_DINO);
 }
 
+// Overriden method of Entity::getCollider(), returns different colliders based on state
 Collider Dino::getCollider() {
   Collider col = *collider;
-  if (state == CROUCH) {
+  if (state == STATE_CROUCH) {
     col.h /= 2;
     col.y += 27;
   }
   return col;
 }
 
+// Crouch movement, called after input handling
 void Dino::crouch() {
-  if (state == GROUND)
-    state = CROUCH;
+  if (state == STATE_GROUND)
+    state = STATE_CROUCH;
 }
 
+// Stand movement, called after input handling
 void Dino::stand() {
-  if (state == CROUCH)
-    state = GROUND;
+  if (state == STATE_CROUCH)
+    state = STATE_GROUND;
 }
 
+// Jump movement, called after input handling
 void Dino::jump() {
-  if (state != AIR) {
-    state = AIR;
+  if (state != STATE_AIR) {
+    state = STATE_AIR;
     ySpeed = -15;
   }
 }
