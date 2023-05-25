@@ -70,4 +70,7 @@ private:
 
   // Used for dealing with background scroll and general entities movement 
   int px;
+
+  // Used for avoiding bugs on first iteration of run after a menu event
+  bool firstFrame;
 };

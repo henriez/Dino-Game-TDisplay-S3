@@ -3,13 +3,15 @@
 #include <SPIFFS.h>
 #include <FS.h>
 
-
+// Macro for limiting max FPS at 25 (1000/40)
 #define FRAMETIME 40
 
+// Macros for heandling game state
 #define STATE_MENU 1
 #define STATE_RUNNING 2
 #define STATE_GAMEOVER 3
 
+// Macros for calling renew functions
 #define RENEW_CACTUS 4
 #define RENEW_BIRD 5
 
@@ -40,6 +42,8 @@ Game::Game() {
 
   state = STATE_MENU;
   start = end = right_prev_state = left_prev_state = score = px = 0;
+
+  firstFrame = true;
 
   // Starts menu
   graphics->clear();
@@ -85,7 +89,6 @@ void Game::run() {
     px %= 320;
     graphics->render(-px, 110, ASSET_BACKGROUND);
 
-
     dino->update();
     cactus->update(-dx);
     bird->update(-dx);
@@ -113,6 +116,8 @@ void Game::run() {
   end = millis();
   if ((end - start) < FRAMETIME)
     delay(FRAMETIME - (end - start));
+
+  firstFrame = false;
 }
 
 // Handle inputs depending on state
@@ -142,6 +147,7 @@ void Game::handleEvents() {
       right_prev_state = digitalRead(RIGHT_PIN);
     }
     score = 0;
+    firstFrame = true;
   }
 }
 
@@ -194,9 +200,9 @@ void Game::reset() {
   graphics->renderText(125, 10, "score");
   graphics->renderText(150, 35, String(score));
 
-  //tone(BUZZER_PIN, 1000, 500);
+  tone(BUZZER_PIN, 1000, 500);
   delay(500);
-  //noTone(BUZZER_PIN);
+  noTone(BUZZER_PIN);
 
   checkScore();
 }
@@ -238,5 +244,5 @@ int Game::scrollBackground() {
 
 // Return deltaTime between current and last frame
 unsigned long Game::deltaTime() {
-  return millis() - end;
+  return (firstFrame) ? 0 : millis() - end;
 }
