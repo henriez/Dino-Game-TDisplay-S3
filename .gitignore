@@ -1,0 +1,7 @@
+*.exe
+pcVersion/src
+*.la
+*.pc
+*.dll
+*.a
+*.cmake
